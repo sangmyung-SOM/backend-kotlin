@@ -1,0 +1,9 @@
+spring:
+  profiles:
+#    active : dev
+    default: local
+
+server:
+  servlet:
+    session:
+      timeout: 3600 # 1시간

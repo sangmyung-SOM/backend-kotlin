@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/login_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <div class="login-form-container shadow">
+            <div class="login-form-center">
+                <div class="top-logo-wrap"></div>
+                <div class="login-image"></div>
+            </div>
+            <div class="login-form-right-side">
+                <div class="login-input-container">
+                    <div class="login-input-wrap input-id">
+                        <i class="fas fa-id-badge"></i>
+                        <input onkeyup="pressEnter();" id="id" placeholder="Id" type="text">
+                    </div>
+                    <div class="login-input-wrap input-password">
+                        <i class="fas fa-key"></i>
+                        <input onkeyup="pressEnter();" id="pw" placeholder="Password" type="password">
+                    </div>
+                </div>
+                <div class="login-btn-wrap">
+                    <button onclick="login()" class="login-btn">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="js/login_script.js"></script>
+</body>
+</html>
