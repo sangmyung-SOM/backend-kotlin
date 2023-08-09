@@ -23,7 +23,9 @@ class SecurityConfig(
 	fun webSecurityCustomizer(): WebSecurityCustomizer? {
 		return WebSecurityCustomizer { web: WebSecurity ->
 			web.ignoring().antMatchers("/api/auth/signin", "/api/auth/refresh", "/api/auth/signup",
-				"/api/questions", "/api/question/**", "/admin/**", "/**", "/css/**", "/js/**", "/images/**")
+				"/api/questions", "/api/question/**", "/admin/**", "/**", "/css/**", "/js/**", "/images/**", "/chat/room"
+			,"/ws/chat/**","/queue/**","/topic/**","/app/**","/rooms","/room/**","/**", "/templates/**", "room/enter/**", "/chat/**"
+			,"/app/chat/message")
 		}
 	}
 
