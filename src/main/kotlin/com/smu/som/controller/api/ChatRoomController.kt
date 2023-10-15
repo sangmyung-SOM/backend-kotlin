@@ -4,6 +4,7 @@ package com.smu.som.controller.api
 import com.smu.som.chatwithroom.ChatRoom
 import com.smu.som.chatwithroom.ChatService
 import lombok.RequiredArgsConstructor
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,11 +33,13 @@ class ChatRoomController(
 
     @PostMapping("/room")
     @ResponseBody
-    fun createRoom(@RequestParam name: String): ChatRoom {
-        return chatService.createRoom(name)
-    }
+	fun createRoom(@RequestParam name: String): ResponseEntity<Map<String, String?>> {
+		val chatRoom = chatService.createRoom(name)
+		val responseData: Map<String, String?> = mapOf("roomId" to chatRoom.roomId)
+		return ResponseEntity.ok(responseData)
+	}
 
-    @GetMapping("room/enter/{roomId}")
+	@GetMapping("room/enter/{roomId}")
     fun roomDetail(model: Model, @PathVariable roomId:String):String{
         model.addAttribute("roomId",roomId)
         return "/chat/roomdetail"
