@@ -15,7 +15,7 @@ class MessageController(
     val sendingOperations: SimpMessageSendingOperations
 ) {
     @MessageMapping("/chat/message")
-    fun enter(chatMessage: ChatMessage){
+    fun chatting(chatMessage: ChatMessage){
         if (MessageType.ENTER.equals(chatMessage.type)){
             chatMessage.message = chatMessage.sender + "enter"
         }

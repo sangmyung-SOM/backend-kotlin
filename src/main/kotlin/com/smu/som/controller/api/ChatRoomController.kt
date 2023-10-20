@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody
 class ChatRoomController(
     var chatService: ChatService
 ) {
-    @GetMapping("/room")
-    fun rooms(model: Model): String {
-        return "/chat/room"
-    }
+//    @GetMapping("/room")
+//    fun rooms(model: Model): String {
+//        return "/chat/room"
+//    }
 
     @GetMapping("/rooms")
     @ResponseBody
@@ -36,11 +36,11 @@ class ChatRoomController(
         return chatService.createRoom(name)
     }
 
-    @GetMapping("room/enter/{roomId}")
-    fun roomDetail(model: Model, @PathVariable roomId:String):String{
-        model.addAttribute("roomId",roomId)
-        return "/chat/roomdetail"
-    }
+//    @GetMapping("room/enter/{roomId}")
+//    fun roomDetail(model: Model, @PathVariable roomId:String):String{
+//        model.addAttribute("roomId",roomId)
+//        return "/chat/roomdetail"
+//    }
 
     @GetMapping("/room/{roomId}")
     @ResponseBody
