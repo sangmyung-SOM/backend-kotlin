@@ -1,5 +1,6 @@
 package com.smu.som.game
 
+import com.smu.som.game.entity.PlayerTemp
 import lombok.Getter
 import lombok.NoArgsConstructor
 import lombok.Setter
@@ -16,6 +17,9 @@ class GameRoom(roomId: UUID, sender: String?) {
 	var userCount: Int = 0
 
 	var turn: String = ""
+
+	private val player1 : PlayerTemp = PlayerTemp("1P")
+	private val player2 : PlayerTemp = PlayerTemp("2P")
 
 	companion object {
 		fun of(roomId: UUID, sender: String?): GameRoom {

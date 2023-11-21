@@ -9,7 +9,7 @@ class GameMalRequest {
 
 	@Getter
 	@NoArgsConstructor
-	public companion object class GetMalMovePositionDTO{
+	public class GetMalMovePositionDTO{
 
 		@JsonProperty("user_id")
 		var userId : Long
