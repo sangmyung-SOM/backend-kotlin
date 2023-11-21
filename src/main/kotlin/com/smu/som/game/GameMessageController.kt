@@ -1,5 +1,6 @@
 package com.smu.som.game
 
+import com.smu.som.game.dto.GameMalRequest
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -174,4 +175,15 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations)
 		}
 	}
 
+	// 말 이동할 수 있는 위치 조회 요청
+	@MessageMapping("/game/mal")
+	fun getMalMovePosition(request : GameMalRequest.GetMalMovePositionDTO){
+		println("말 이동 소켓 통신 테스트")
+		println("request.yutResult = ${request.yutResult}")
+		println("request.playerId = ${request.playerId}")
+
+		// 게임 찾기 <- 원래 이거 Service 클래스에서 해야함.
+		// 나머진 다 service 클래스에서
+		//
+	}
 }
