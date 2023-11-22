@@ -1,6 +1,7 @@
 package com.smu.som.game
 
 import com.smu.som.game.dto.GameMalRequest
+import com.smu.som.game.dto.GameMalResponse
 import com.smu.som.game.entity.YutResult
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
@@ -8,6 +9,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 @RestController
@@ -182,7 +185,39 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations)
 		println("request.playerId = ${request.playerId}")
 
 		// 게임 찾기 <- 원래 이거 Service 클래스에서 해야함.
+		var gameRoom : GameRoom
+		for(item in roomList){
+			if(item.roomId.equals(request.gameId)){
+				gameRoom = item
+				break
+			}
+		}
+
 		// 나머진 다 service 클래스에서
-		//
+
+		// 임시 리턴값 설정
+		var malMoveInfo = GameMalResponse.MalMoveInfo(
+			malId = 0,
+			isEnd = false,
+			point = 1,
+			position = 3,
+			nextPosition = 5
+		)
+
+		var malList = ArrayList<GameMalResponse.MalMoveInfo>()
+		malList.add(malMoveInfo)
+
+		var response = GameMalResponse.GetMalMovePosition(
+			userId = request.userId,
+			playerId = request.playerId,
+			yutResult = request.yutResult,
+			malList = malList
+		);
+
+		val url = StringBuilder("/topic/game/")
+			.append(request.gameId)
+			.append("/mal")
+			.toString()
+		sendingOperations.convertAndSend(url, response)
 	}
 }
