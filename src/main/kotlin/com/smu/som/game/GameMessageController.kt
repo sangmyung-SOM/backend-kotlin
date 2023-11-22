@@ -1,13 +1,14 @@
 package com.smu.som.game
 
 import com.smu.som.game.dto.GameMalRequest
+import com.smu.som.game.entity.YutResult
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
+import kotlin.collections.HashMap
 
 @RestController
 @RequiredArgsConstructor
@@ -15,96 +16,103 @@ import java.util.concurrent.atomic.AtomicInteger
 class GameMessageController(val sendingOperations: SimpMessageSendingOperations)
 {
 
-	var roomList = ArrayList<GameRoom>()
+	var roomList = HashMap<GameRoom, String>() // 게임방, 유저아이디
 	var nameList = ArrayList<String>()
-	var gameSetting = ArrayList<String>()
+	var gameSetting = HashMap<GameRoom, List<String>>() // 게임방, 게임설정
 
 
 	@MessageMapping("/game/message")
-	fun gameStart(gameMessage: GameMessage){
-
-		// 게임방에 접속한 클라이언트 수
-		var userCount = AtomicInteger(0)
-
-		roomList.add(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender))
-
-		// 게임방에 접속한 클라이언트 수를 증가시키는 함수
-		fun addUserCount(roomId: UUID, userName: String){
-			println("addUserCount")
-			roomList.forEach {
-				if(it.roomId == roomId){
-					it.userCount++
-					userCount.set(it.userCount)
-					nameList.add(userName)
-
-					if(gameMessage.turn == "1P") {
-
-						gameMessage.gameCategory?.split(",")?.get(0)?.let { it1 -> gameSetting.add(it1) }
-						gameMessage.gameCategory?.split(",")?.get(1)?.let { it1 -> gameSetting.add(it1) }
-						gameMessage.gameCategory?.split(",")?.get(2)?.let { it1 -> gameSetting.add(it1) }
-
-					}
-
-
-					sendingOperations.convertAndSend("/topic/game/room/"+gameMessage.roomId,gameMessage)
-				}
-
-			}
-			println("addUserCount END")
-		}
-
-		if (userCount.get() < 3 && gameMessage.type == GameStateType.WAIT) {
-			gameMessage.sender?.let { addUserCount(UUID.fromString(gameMessage.roomId), it) }
-		}
+	fun gameWait(gameMessage: GameMessage){
 
 		// WAIT 처음 입장
-		if (GameStateType.WAIT == gameMessage.type){
+		if (GameStateType.WAIT == gameMessage.type) {
 
-			gameMessage.turn = gameMessage.turn
+			gameMessage.sender?.let {
+				roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.turn),
+					it // 유저닉네임
+				)
+			}
+
 			if (gameMessage.turn == "1P") {
 				var category = gameMessage.gameCategory?.split(",")?.get(0)
 				var kcategory = gameMessage.gameCategory?.split(",")?.get(1)
 				var adult = gameMessage.gameCategory?.split(",")?.get(2)
 
-				if (category != null) {
-					gameSetting.add(category)
+				if (category != null && kcategory != null && adult != null) {
+					gameSetting[GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.turn)] =
+						listOf(category, kcategory, adult)
 				}
-				if (kcategory != null) {
-					gameSetting.add(kcategory)
-				}
-				if (adult != null) {
-					gameSetting.add(adult)
-				}
+				var name2p : String? = null
 				println("$category $kcategory $adult")
+
+				roomList.forEach {
+					if (it.key.roomId == UUID.fromString(gameMessage.roomId) && it.key.turn == "2P") {
+						name2p = it.value
+					}
+				}
+
+				if (name2p != null) {
+					println("2P가 들어와있습니다.")
+					gameMessage.type = GameStateType.START
+					gameMessage.userNameList = "${gameMessage.sender},$name2p"
+				}
+
+
+
 			}
 
-			println("WAIT STATE : " + gameMessage.turn + " " + gameMessage.sender)
+			println("WAIT STATE : " + gameMessage.turn + " " + gameMessage.sender + " " + gameMessage.roomId)
 
 
-			// 2P 들어오면 게임 시작
-			// 예외사항 : 2P가 1P 보다 먼저 들어오게 되는 경우
-			if(gameMessage.turn == "2P"){
+			//1P가 있는 방에 2P가 들어오면 게임 시작 메시지 전송
+			if (gameMessage.turn == "2P") {
 				gameMessage.type = GameStateType.START
-				gameMessage.userNameList = nameList[0] + "," + nameList[1]
-				gameMessage.gameCategory = gameSetting[0] + "," + gameSetting[1] + "," + gameSetting[2]
 
+				var name1p: String? = null
+				val name2p = gameMessage.sender
 
-				gameMessage.turn = gameMessage.turn
+				// 2P가 들어오면 1P의 이름을 가져옴
+				roomList.forEach {
+					if (it.key.roomId == UUID.fromString(gameMessage.roomId) && it.key.turn == "1P") {
+						name1p = it.value
+					}
+				}
+
+				// 예외사항 : 2P가 1P 보다 먼저 들어오게 되는 경우 대기
+				if (name1p == null) {
+					println("1P가 들어오지 않았습니다.")
+					gameMessage.type = GameStateType.WAIT
+					gameMessage.answerMessage = "1P가 들어오지 않았습니다."
+					sendingOperations.convertAndSend("/topic/game/room/" + gameMessage.roomId, gameMessage)
+				}
+				else {
+					gameMessage.userNameList = "$name1p,$name2p"
+					gameSetting.forEach {
+						if (it.key.roomId == UUID.fromString(gameMessage.roomId) && it.key.userName == name1p) {
+							gameMessage.gameCategory = it.value[0] + "," + it.value[1] + "," + it.value[2]
+						}
+					}
+
+				}
 			}
-
-			sendingOperations.convertAndSend("/topic/game/room/"+gameMessage.roomId,gameMessage)
-
+			sendingOperations.convertAndSend("/topic/game/room/" + gameMessage.roomId, gameMessage)
 		}
 
-		// START 게임 시작
-		if(GameStateType.START == gameMessage.type){
-			gameMessage.gameCategory = gameSetting[0] + "," + gameSetting[1] + "," + gameSetting[2]
+		// 1P 2P 모두 입장 후 게임 시작
+		if (GameStateType.START == gameMessage.type) {
 
-			println("START : $gameMessage")
-
-			sendingOperations.convertAndSend("/topic/game/room/"+gameMessage.roomId,gameMessage)
+			println("START STATE : " + gameMessage.turn + " " + gameMessage.sender + " " + gameMessage.roomId)
 
 		}
+	}
+
+	@MessageMapping("/game/start")
+	fun gameStart(gameMessage: GameMessage){
+
+		println("START : $gameMessage")
+
+		sendingOperations.convertAndSend("/topic/game/start/"+gameMessage.roomId,gameMessage)
+
 	}
 
 	@MessageMapping("/game/throw")
@@ -154,32 +162,23 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations)
 
 	@MessageMapping("/game/question")
 	fun question(gameMessage : GameMessage){
-		if (GameStateType.QUESTION == gameMessage.type) {
+		gameMessage.questionMessage = gameMessage.questionMessage
 
-			gameMessage.questionMessage = gameMessage.questionMessage
-
-			println("QUESTION : " + gameMessage.turn + " " + gameMessage.sender + " " + gameMessage.questionMessage)
-			sendingOperations.convertAndSend("/topic/game/question/"+gameMessage.roomId,gameMessage)
-
-		}
+		println("QUESTION : " + gameMessage.turn + " " + gameMessage.sender + " " + gameMessage.questionMessage)
+		sendingOperations.convertAndSend("/topic/game/question/"+gameMessage.roomId,gameMessage)
 	}
 
 	@MessageMapping("/game/answer")
 	fun answer(gameMessage : GameMessage){
-		if (GameStateType.ANSWER == gameMessage.type) {
-			gameMessage.type = GameStateType.ANSWER_RESULT
-
-			println("ANSWER : " + gameMessage.turn + " " + gameMessage.sender + " " + gameMessage.answerMessage)
-			sendingOperations.convertAndSend("/topic/game/answer/"+gameMessage.roomId,gameMessage)
-
-		}
+		gameMessage.type = GameStateType.ANSWER_RESULT
+		println("ANSWER : " + gameMessage.turn + " " + gameMessage.sender + " " + gameMessage.answerMessage)
+		sendingOperations.convertAndSend("/topic/game/answer/"+gameMessage.roomId,gameMessage)
 	}
 
 	// 말 이동할 수 있는 위치 조회 요청
 	@MessageMapping("/game/mal")
 	fun getMalMovePosition(request : GameMalRequest.GetMalMovePositionDTO){
 		println("말 이동 소켓 통신 테스트")
-		println("request.yutResult = ${request.yutResult}")
 		println("request.playerId = ${request.playerId}")
 
 		// 게임 찾기 <- 원래 이거 Service 클래스에서 해야함.
