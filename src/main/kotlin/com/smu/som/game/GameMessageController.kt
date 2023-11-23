@@ -187,8 +187,8 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations)
 		// 게임 찾기 <- 원래 이거 Service 클래스에서 해야함.
 		var gameRoom : GameRoom
 		for(item in roomList){
-			if(item.roomId.equals(request.gameId)){
-				gameRoom = item
+			if(item.key.roomId == UUID.fromString(request.gameId)){
+				gameRoom = item.key
 				break
 			}
 		}
