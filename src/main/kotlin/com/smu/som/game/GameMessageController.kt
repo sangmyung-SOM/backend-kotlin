@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.web.bind.annotation.RestController
+import java.lang.RuntimeException
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayList
@@ -16,7 +17,7 @@ import kotlin.collections.HashMap
 @RestController
 @RequiredArgsConstructor
 @NoArgsConstructor
-class GameMessageController(val sendingOperations: SimpMessageSendingOperations)
+class GameMessageController(val sendingOperations: SimpMessageSendingOperations, val gameMalService: GameMalService)
 {
 
 	var roomList = HashMap<GameRoom, String>() // 게임방, 유저아이디
@@ -183,41 +184,30 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations)
 	fun getMalMovePosition(request : GameMalRequest.GetMalMovePositionDTO){
 		println("말 이동 소켓 통신 테스트")
 		println("request.playerId = ${request.playerId}")
+		println("request.gameId = ${request.gameId}")
+		println("request.yutResult = ${request.yutResult}")
 
 		// 게임 찾기 <- 원래 이거 Service 클래스에서 해야함.
-		var gameRoom : GameRoom
-		for(item in roomList){
-			if(item.roomId.equals(request.gameId)){
-				gameRoom = item
-				break
-			}
-		}
+		var gameRoom : GameRoom = findGameRoom(request.gameId)
 
 		// 나머진 다 service 클래스에서
-
-		// 임시 리턴값 설정
-		var malMoveInfo = GameMalResponse.MalMoveInfo(
-			malId = 0,
-			isEnd = false,
-			point = 1,
-			position = 3,
-			nextPosition = 5
-		)
-
-		var malList = ArrayList<GameMalResponse.MalMoveInfo>()
-		malList.add(malMoveInfo)
-
-		var response = GameMalResponse.GetMalMovePosition(
-			userId = request.userId,
-			playerId = request.playerId,
-			yutResult = request.yutResult,
-			malList = malList
-		);
+		val response = gameMalService.getAllMalMovement(gameRoom, request)
 
 		val url = StringBuilder("/topic/game/")
 			.append(request.gameId)
 			.append("/mal")
 			.toString()
 		sendingOperations.convertAndSend(url, response)
+	}
+
+	// 게임 찾기 <- 이것도 원래는 service 클래스에서 해야함
+	private fun findGameRoom(gameId:String):GameRoom{
+		for(item in roomList.keys){
+			if(item.roomId == UUID.fromString(gameId)){
+				return item
+			}
+		}
+
+		throw RuntimeException("게임을 찾을 수 없음.")
 	}
 }
