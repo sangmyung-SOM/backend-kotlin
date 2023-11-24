@@ -13,4 +13,82 @@ class Mal (val id : Int) {
 		this.updaMalList = ArrayList()
 		this.isEnd = false
 	}
+
+	// 말 움직이기
+	public fun move(yutResult: YutResult) : Int{
+		position = findNextPosition(yutResult)
+
+		// 말이 도착했을 경우
+		if(position == 0){
+			finish()
+		}
+
+		return position
+	}
+
+	// 말 움직이는 위치 찾기
+	public fun findNextPosition(yutResult: YutResult) : Int{
+
+		// 빽도일 경우
+		if(yutResult == YutResult.BACK_DO){
+			when(position){
+				// 교차점일 경우
+				25 -> { return 15 }
+				27 -> {return 23}
+				30->{return 20}
+				// 끝
+				20->{return 0}
+				// 나머지
+				else -> {return position-1}
+			}
+		}
+
+		// 도~모 일경우
+		var nextPosition : Int = position
+		when(nextPosition){ // 교차점에서 시작할 경우를 위해서
+			// 교차점일 경우
+			5->{nextPosition = 21}
+			10->{nextPosition = 26}
+			23->{nextPosition = 29}
+			// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
+			25->{nextPosition = 15}
+			27->{nextPosition = 23}
+			30->{nextPosition = 20}
+			// 끝
+			20->{ return 0 }
+			// 나머지
+			else->{nextPosition++}
+		}
+
+		for(i in 0 until yutResult.move-1){
+			when(nextPosition){
+				// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
+				25->{nextPosition =15}
+				27->{nextPosition =23}
+				30->{nextPosition =20}
+				// 끝
+				20->{ return 0 }
+				// 나머지
+				else->{nextPosition++}
+			}
+		}
+
+		return nextPosition
+	}
+
+	public fun getPosition():Int{
+		return position
+	}
+
+	private fun finish(){
+		this.isEnd = true
+	}
+
+	public fun getPoint() : Int{
+		return point
+	}
+
+	public fun isEnd() : Boolean{
+		return isEnd
+	}
 }
