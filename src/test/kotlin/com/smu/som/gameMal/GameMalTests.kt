@@ -32,4 +32,13 @@ class GameMalTests {
 		mal.move(YutResult.MO)
 		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
 	}
+
+	@Test
+	public fun 말움직이기_빽도_테스트(){
+		// 빽도
+		val mal : Mal = Mal(0)
+
+		mal.move(YutResult.BACK_DO)
+		println("빽도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+	}
 }
