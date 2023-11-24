@@ -186,9 +186,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		println("request.playerId = ${request.playerId}")
 		println("request.gameId = ${request.gameId}")
 		println("request.yutResult = ${request.yutResult}")
+		
 
-		// 게임 찾기 <- 원래 이거 Service 클래스에서 해야함.
 		var gameRoom : GameRoom = findGameRoom(request.gameId)
+
 
 		// 나머진 다 service 클래스에서
 		val response = gameMalService.getAllMalMovement(gameRoom, request)
