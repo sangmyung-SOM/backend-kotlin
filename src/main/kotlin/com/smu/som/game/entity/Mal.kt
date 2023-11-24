@@ -32,10 +32,10 @@ class Mal (val id : Int) {
 		// 빽도일 경우
 		if(yutResult == YutResult.BACK_DO){
 			when(position){
-				// 교차점일 경우
-				25 -> { return 15 }
-				27 -> {return 23}
-				30->{return 20}
+				1 -> { return 20 }
+				21 -> {return 5}
+				23->{return 27}
+				29->{return 23}
 				// 끝
 				20->{return 0}
 				// 나머지
