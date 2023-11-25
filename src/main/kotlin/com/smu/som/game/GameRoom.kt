@@ -34,18 +34,6 @@ class GameRoom(roomId: UUID, sender: String?, turn: String?) {
 
 	}
 
-	public fun moveMal(playerId: String, malId:Int) :Int{
-		val player : PlayerTemp = findPlayer(playerId)
-
-		return -1;
-	}
-
-	public fun findAllMalMovePosition(playerId: String, yutResult: YutResult) : Map<Int, Int>{
-		val player : PlayerTemp = findPlayer(playerId)
-
-		return player.findAllMalMovePosition(yutResult)
-	}
-
 	public fun findPlayer(playerId: String) : PlayerTemp{
 		return if(playerId.equals("1P")) player1 else player2
 	}

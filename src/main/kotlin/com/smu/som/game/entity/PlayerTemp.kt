@@ -35,7 +35,10 @@ class PlayerTemp(id : String) {
 		return nextPosition
 	}
 
-	// 모든 말에 대해 윷 결과만큼 움직였을 때 위치
+	/**
+	 * 모든 말에 대해 윷 결과만큼 움직였을 때 위치
+	 * @return key: 말id, value: Mal
+	 */
 	public fun findAllMalMovePosition(yutResult : YutResult) : Map<Int, Int> {
 
 		var map = HashMap<Int, Int>() // 말id, nextPosition
@@ -48,7 +51,7 @@ class PlayerTemp(id : String) {
 	}
 
 	// 말 찾기
-	private fun findMal(malId : Int) : Mal{
+	public fun findMal(malId : Int) : Mal{
 		for(mal in malList){
 			if(mal.id == malId){
 				return mal

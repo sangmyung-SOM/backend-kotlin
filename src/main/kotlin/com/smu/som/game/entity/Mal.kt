@@ -16,14 +16,16 @@ class Mal (val id : Int) {
 
 	// 말 움직이기
 	public fun move(yutResult: YutResult) : Int{
-		position = findNextPosition(yutResult)
+		val nextPosition = findNextPosition(yutResult)
 
 		// 말이 도착했을 경우
-		if(position == 0){
+		if(nextPosition == 0 && this.position != 0){
 			finish()
 		}
 
-		return position
+		this.position = nextPosition
+
+		return nextPosition
 	}
 
 	// 말 움직이는 위치 찾기
@@ -32,10 +34,11 @@ class Mal (val id : Int) {
 		// 빽도일 경우
 		if(yutResult == YutResult.BACK_DO){
 			when(position){
-				// 교차점일 경우
-				25 -> { return 15 }
-				27 -> {return 23}
-				30->{return 20}
+				0 -> {return 0}
+				1 -> { return 20 }
+				21 -> {return 5}
+				23->{return 27}
+				29->{return 23}
 				// 끝
 				20->{return 0}
 				// 나머지
