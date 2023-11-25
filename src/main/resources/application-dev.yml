@@ -7,9 +7,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${/jenga/db/url}
-    username: ${/jenga/db/username}
-    password: ${/jenga/db/password}
+    url: jdbc:mysql://${/som2/db/url}
+    username: ${/som2/db/username}
+    password: ${/som2/db/password}
 
   security:
     oauth2:
