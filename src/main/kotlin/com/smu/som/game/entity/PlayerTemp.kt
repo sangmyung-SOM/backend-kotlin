@@ -51,7 +51,7 @@ class PlayerTemp(id : String) {
 	}
 
 	// 말 찾기
-	private fun findMal(malId : Int) : Mal{
+	public fun findMal(malId : Int) : Mal{
 		for(mal in malList){
 			if(mal.id == malId){
 				return mal

@@ -182,7 +182,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	// 말 이동할 수 있는 위치 조회 요청
 	@MessageMapping("/game/mal")
 	fun getMalMovePosition(request : GameMalRequest.GetMalMovePositionDTO){
-		println("말 이동 소켓 통신 테스트")
+		println("말 이동할 수 있는 위치 조회 소켓 통신 테스트")
 		println("request.playerId = ${request.playerId}")
 		println("request.gameId = ${request.gameId}")
 		println("request.yutResult = ${request.yutResult}")
@@ -197,6 +197,26 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val url = StringBuilder("/topic/game/")
 			.append(request.gameId)
 			.append("/mal")
+			.toString()
+		sendingOperations.convertAndSend(url, response)
+	}
+
+	// 말 이동하기
+	@MessageMapping("/game/mal/move")
+	fun moveMal(request: GameMalRequest.MoveMalDTO){
+		println("말 이동 소켓 통신 테스트")
+		println("request.playerId = ${request.playerId}")
+		println("request.gameId = ${request.gameId}")
+		println("request.yutResult = ${request.yutResult}")
+		println("request.malId = ${request.malId}")
+
+		val gameRoom: GameRoom = findGameRoom(request.gameId)
+
+		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
+
+		val url = StringBuilder("/topic/game/")
+			.append(request.gameId)
+			.append("/mal/move")
 			.toString()
 		sendingOperations.convertAndSend(url, response)
 	}
