@@ -5,8 +5,11 @@ import lombok.NoArgsConstructor
 
 
 data class ChatMessage(
-    var type: MessageType?,
-    var roomId :String?,
-    var sender:String?,
-    var message:String?
+	@JsonProperty("messageType")
+	var type: MessageType?,
+	@JsonProperty("chatRoomId")
+	var roomId :String?,
+	@JsonProperty("sender")
+	var sender:String?,
+	var message:String?=""
 )
