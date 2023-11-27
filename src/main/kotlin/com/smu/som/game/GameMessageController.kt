@@ -2,6 +2,8 @@ package com.smu.som.game
 
 import com.smu.som.game.dto.GameMalRequest
 import com.smu.som.game.dto.GameMalResponse
+import com.smu.som.game.dto.GameScoreRequest
+import com.smu.som.game.entity.PlayerTemp
 import com.smu.som.game.entity.YutResult
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
@@ -92,7 +94,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 				else {
 					gameMessage.userNameList = "$name1p,$name2p"
 					gameSetting.forEach {
-						if (it.key.roomId == UUID.fromString(gameMessage.roomId) && it.key.userName == name1p) {
+						if (it.key.roomId == UUID.fromString(gameMessage.roomId) && it.key.sender == name1p) {
 							gameMessage.gameCategory = it.value[0] + "," + it.value[1] + "," + it.value[2]
 						}
 					}
@@ -121,17 +123,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 	@MessageMapping("/game/throw")
 	fun yutThrow(gameMessage : GameMessage){
-
-		// yutInfoMessage
-		/*
-		 {
-			"roomId": "1",
-			"sender": "name",
-			"yut": "1",
-			"turnChange": "TURN_CHANGE",
-
-		 }
-		 */
 
 		// 첫번째로 던졌을때 말 추가 버튼 클릭 없이 말 이동
 		if(GameStateType.FIRST_THROW == gameMessage.type){
@@ -219,6 +210,36 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			.append("/mal/move")
 			.toString()
 		sendingOperations.convertAndSend(url, response)
+	}
+
+	// 플레이어 점수 조회
+	@MessageMapping("/game/score")
+	fun getPlayerScore(request: GameMessage) {
+		println("플레이어 점수 조회 소켓 통신 테스트")
+
+		var gameRoom : GameRoom = findGameRoom(request.roomId.toString())
+		val player : PlayerTemp? = request.turn?.let { gameRoom.findPlayer(it) }
+
+		player?.getMalList()?.forEach {
+			if(it.isEnd()) {
+				player.addScore(1)
+			}
+		}
+
+		request.player1Score = gameRoom.player1.getScore()
+		request.player2Score = gameRoom.player2.getScore()
+
+		println("request.playerId = ${request.turn}, " +
+			"request.1pScore = ${request.player1Score}, " +
+			"request.2pScore = ${request.player2Score}")
+
+		if (request.player1Score == 4) {
+			request.winner = "1P"
+		} else if (request.player2Score == 4) {
+			request.winner = "2P"
+		}
+
+		sendingOperations.convertAndSend("/topic/game/score" + request.roomId, request)
 	}
 
 	// 게임 찾기 <- 이것도 원래는 service 클래스에서 해야함

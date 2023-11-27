@@ -15,6 +15,9 @@ data class GameMessage(
 	@JsonProperty("turn")
 	var turn: String? = "",
 
+	var player1Score : Int,
+	var player2Score : Int,
+
 	var turnChange: String? = "",
 	var gameCategory: String? = "",
 	var questionMessage: String? = "",
@@ -22,6 +25,7 @@ data class GameMessage(
 	var userNameList: String? = "",
 	var yut: String? = "",
 	var mal: String? = "",
+	var winner: String? = "",
 
 
 )

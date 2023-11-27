@@ -7,7 +7,7 @@ enum class GameStateType {
 	TURN_CHANGE,
 	TURN_1P, TURN_2P,
 	WIN, LOSE,
-	MOVE,
+	MOVE, SCORE,
 	QUESTION, ANSWER,
 	ANSWER_RESULT
 
