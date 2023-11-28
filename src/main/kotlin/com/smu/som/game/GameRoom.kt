@@ -37,4 +37,8 @@ class GameRoom(roomId: UUID, sender: String?, turn: String?) {
 	public fun findPlayer(playerId: String) : PlayerTemp{
 		return if(playerId.equals("1P")) player1 else player2
 	}
+
+	public fun findOppPlayer(playerId: String) : PlayerTemp{
+		return if(playerId.equals("1P")) player2 else player1
+	}
 }

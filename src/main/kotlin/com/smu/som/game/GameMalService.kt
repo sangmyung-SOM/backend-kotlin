@@ -40,9 +40,12 @@ class GameMalService {
 	// 말 움직이기
 	public fun moveMal(gameRoom: GameRoom, request: GameMalRequest.MoveMalDTO) : GameMalResponse.MoveMalDTO{
 		val player = gameRoom.findPlayer(request.playerId)
+		val oppPlayer = gameRoom.findOppPlayer(request.playerId)
 		val mal : Mal = player.findMal(request.malId)
 
-		player.moveMal(request.malId, request.yutResult)
+		player.moveMal(mal, request.yutResult)
+		val caughtMalId = player.catchMal(mal, oppPlayer)
+		val updaMalId = player.updaMal(mal)
 
 		return GameMalResponse.MoveMalDTO(
 			userId = request.userId,
@@ -50,10 +53,10 @@ class GameMalService {
 			malId = request.malId,
 			point = mal.getPoint(),
 			nextPosition = mal.getPosition(),
-			isCatchMal = false,
-			catchMalId = -1,
-			isUpdaMal = false,
-			updaMalId = -1
+			isCatchMal = if(caughtMalId == -1) false else true,
+			catchMalId = caughtMalId,
+			isUpdaMal = if(updaMalId == -1) false else true,
+			updaMalId = updaMalId
 		)
 	}
 }
