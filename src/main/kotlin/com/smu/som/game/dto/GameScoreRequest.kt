@@ -1,18 +1,30 @@
 package com.smu.som.game.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import lombok.Getter
+import lombok.NoArgsConstructor
 
-data class GameScoreRequest (
-	@JsonProperty("game_id")
-	var gameId : String,
+class GameScoreRequest {
 
-	@JsonProperty("player_id")
-	var playerId : String,
+	@Getter
+	@NoArgsConstructor
+	class getGameScoreDTO {
+		@JsonProperty("game_id")
+		var gameId: String
 
-	@JsonProperty("1P_score")
-	var player1Score : Int,
+		@JsonProperty("player_id")
+		var playerId: String
 
-	@JsonProperty("2P_score")
-	var player2Score : Int
+		var player1Score: Int
 
-)
+		var player2Score: Int
+
+		constructor(gameId: String, playerId: String, player1Score: Int, player2Score: Int) {
+			this.gameId = gameId
+			this.playerId = playerId
+			this.player1Score = player1Score
+			this.player2Score = player2Score
+		}
+	}
+
+}
