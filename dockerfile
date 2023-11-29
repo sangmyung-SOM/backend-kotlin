@@ -1,5 +1,5 @@
 FROM openjdk:17.0.2-slim
-ARG JAR_FILE=build/libs/som-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/*.jar
 
 COPY .aws/config /root/.aws/config
 COPY .aws/credentials /root/.aws/credentials
