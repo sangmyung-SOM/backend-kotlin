@@ -7,6 +7,7 @@ class PlayerTemp(id : String) {
 
 	private var id : String
 	private var malList : MutableList<Mal>
+	private var score : Int = 0
 
 	init {
 		this.id = id
@@ -73,5 +74,13 @@ class PlayerTemp(id : String) {
 
 	public fun getMalList(): MutableList<Mal>{
 		return malList
+	}
+
+	fun addScore(score: Int) {
+		this.score += score
+	}
+
+	fun getScore(): Int {
+		return score
 	}
 }
