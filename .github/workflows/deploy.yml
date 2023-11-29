@@ -25,6 +25,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Build gradlew
+        run: ./gradlew build
+
       - name: docker build and push
         run: |
           docker login -u ${{ secrets.BSH_DOCKER_USERNAME }} -p ${{ secrets.BSH_DOCKER_PASSWORD }}
