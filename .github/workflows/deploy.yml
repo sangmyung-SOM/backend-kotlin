@@ -40,8 +40,8 @@ jobs:
       - name: docker build and push
         run: |
           docker login -u ${{ secrets.BSH_DOCKER_USERNAME }} -p ${{ secrets.BSH_DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.BSH_DOCKER_REPO }}/som2 .
-          docker push ${{ secrets.DOCKER_REPO }}/som2
+          docker build -t ${{ secrets.BSH_DOCKER_REPO }}:som2 .
+          docker push ${{ secrets.DOCKER_REPO }}:som2
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
