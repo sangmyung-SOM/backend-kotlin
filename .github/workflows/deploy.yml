@@ -37,18 +37,18 @@ jobs:
       - name: Build gradlew
         run: ./gradlew build
 
-      - name: docker build and push
-        run: |
-          docker login -u ${{ secrets.BSH_DOCKER_USERNAME }} -p ${{ secrets.BSH_DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.BSH_DOCKER_REPO }} .
-          docker push ${{ secrets.DOCKER_REPO }}
+#      - name: docker build and push
+#        run: |
+#          docker login -u ${{ secrets.BSH_DOCKER_USERNAME }} -p ${{ secrets.BSH_DOCKER_PASSWORD }}
+#          docker build -t ${{ secrets.BSH_DOCKER_REPO }} .
+#          docker push ${{ secrets.DOCKER_REPO }}
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
-          IMAGE_TAG: ${{ github.sha }}
+#          IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
