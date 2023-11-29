@@ -25,6 +25,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: permission gradlew
+        run: chmod +x ./gradlew
+
       - name: Build gradlew
         run: ./gradlew build
 
