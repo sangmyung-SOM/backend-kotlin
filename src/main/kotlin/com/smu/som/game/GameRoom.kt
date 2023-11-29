@@ -12,23 +12,19 @@ import java.util.UUID
 @NoArgsConstructor
 @Getter
 @Setter
-class GameRoom(roomId: UUID, sender: String?, turn: String?) {
-
-	var userCount: Int = 0
-	var roomId: UUID = roomId
-	var userName: String? = sender
-	var turn: String? = turn
+class GameRoom(var roomId: UUID, var sender: String?, var turn: String?, var profileURL: String?) {
 
 	// 이렇게 저장해놓는것보다 배열이나 hashmap으로 저장해놓는게 좋을텐데..
-	private val player1 : PlayerTemp = PlayerTemp("1P")
-	private val player2 : PlayerTemp = PlayerTemp("2P")
+	val player1 : PlayerTemp = PlayerTemp("1P")
+	val player2 : PlayerTemp = PlayerTemp("2P")
 
 	companion object {
-		fun of(roomId: UUID, sender: String?, turn: String?): GameRoom {
+		fun of(roomId: UUID, sender: String?, turn: String?, profileURL: String?): GameRoom {
 			return GameRoom(
 				roomId = roomId,
 				sender = sender,
-				turn = turn
+				turn = turn,
+				profileURL = profileURL
 			)
 		}
 
@@ -36,5 +32,9 @@ class GameRoom(roomId: UUID, sender: String?, turn: String?) {
 
 	public fun findPlayer(playerId: String) : PlayerTemp{
 		return if(playerId.equals("1P")) player1 else player2
+	}
+
+	public fun findOppPlayer(playerId: String) : PlayerTemp{
+		return if(playerId.equals("1P")) player2 else player1
 	}
 }

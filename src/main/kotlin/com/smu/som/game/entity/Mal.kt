@@ -3,24 +3,31 @@ package com.smu.som.game.entity
 class Mal (val id : Int) {
 
 	private var position : Int
-	private var point : Int // 업은 말의 개수
-	private var updaMalList : List<Mal>
+	private var updaMalList : MutableList<Mal> // 업은 말
 	private var isEnd : Boolean
+	private var isUped : Boolean // 다른 말에게 업혔는지 여부
 
 	init {
 		this.position = 0
-		this.point = 1
 		this.updaMalList = ArrayList()
 		this.isEnd = false
+		this.isUped = false
 	}
 
 	// 말 움직이기
 	public fun move(yutResult: YutResult) : Int{
+		checkValid()
+
 		val nextPosition = findNextPosition(yutResult)
 
 		// 말이 도착했을 경우
 		if(nextPosition == 0 && this.position != 0){
 			finish()
+
+			// 업은 말에 대해서도 도착 처리 해줌
+			for(updaMal in updaMalList){
+				updaMal.finish()
+			}
 		}
 
 		this.position = nextPosition
@@ -30,6 +37,8 @@ class Mal (val id : Int) {
 
 	// 말 움직이는 위치 찾기
 	public fun findNextPosition(yutResult: YutResult) : Int{
+
+		checkValid()
 
 		// 빽도일 경우
 		if(yutResult == YutResult.BACK_DO){
@@ -79,19 +88,77 @@ class Mal (val id : Int) {
 		return nextPosition
 	}
 
+	// 말 잡기
+	public fun catch(oppMalList : List<Mal>): Int{
+		checkValid()
+
+		for(oppMal in oppMalList){
+			if(oppMal.position == this.position && oppMal.isValid()) { // 잡음
+				oppMal.position = 0
+				oppMal.isUped = false
+
+				for(oppUpdaMal in oppMal.updaMalList){ // 잡은 말의 업은 말들에 대해 처리
+					oppUpdaMal.position = 0
+					oppUpdaMal.isUped = false
+					oppUpdaMal.updaMalList.clear()
+				}
+				oppMal.updaMalList.clear()
+
+				return oppMal.id
+			}
+		}
+
+		return -1
+	}
+
+	// 말 업기
+	public fun upda(malList: List<Mal>): Int {
+		checkValid()
+
+		for(mal in malList){
+			if(mal.position == this.position && mal.id != this.id && mal.isValid()){ // 업음
+				mal.isUped = true
+				for(updaMal in mal.updaMalList) { // 업으려는 말의 업힌 말에 대해 처리
+					this.updaMalList.add(updaMal)
+				}
+				this.updaMalList.add(mal)
+
+				return mal.id
+			}
+		}
+
+		return -1;
+	}
+
+	// 말이 유효한지 확인
+	// 다른 말에 업혀있거나, 이미 끝난 말이면 false 리턴
+	public fun isValid() : Boolean{
+		return !(isEnd || isUped)
+	}
+
+	// 말이 유효한지 확인
+	// 다른 말에 업혀있거나, 이미 끝난 말이면 예외 발생
+	private fun checkValid(){
+		if (isEnd || isUped){
+			throw RuntimeException("말이 유효하지 않음")
+		}
+	}
+
 	public fun getPosition():Int{
 		return position
+	}
+
+	// 업은 말의 개수
+	public fun getPoint() : Int{
+		return updaMalList.size + 1
 	}
 
 	private fun finish(){
 		this.isEnd = true
 	}
 
-	public fun getPoint() : Int{
-		return point
-	}
-
 	public fun isEnd() : Boolean{
 		return isEnd
 	}
+
 }

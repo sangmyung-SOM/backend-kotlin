@@ -18,45 +18,6 @@ class GameService {
 		return null
 	}
 
-	fun userLimit(roomId: UUID): Boolean {
-		val gameRoom = findRoom(roomId)
-		if (gameRoom != null) {
-			if (gameRoom.userCount == 2) {
-				return true
-			}
-		}
-		return false
-	}
-
-	fun joinRoom(roomId: UUID, userName: String): GameRoom? {
-		val gameRoom = findRoom(roomId)
-		if (gameRoom != null) {
-			if (gameRoom.userCount < 2) {
-				gameRoom.userCount++
-				return gameRoom
-			}
-		}
-		return null
-	}
-
-	fun joinRoom(roomId: UUID): GameRoom? {
-		val gameRoom = findRoom(roomId)
-		if (gameRoom != null) {
-			if (gameRoom.userCount < 2) {
-				gameRoom.userCount++
-				return gameRoom
-			}
-		}
-		return null
-	}
-
-	fun getUserCount(roomId: UUID): Int {
-		val gameRoom = findRoom(roomId)
-		if (gameRoom != null) {
-			return gameRoom.userCount
-		}
-		return 0
-	}
 
 	fun setBtnState(gameState: String){
 		if (gameState == "TRUE") {
