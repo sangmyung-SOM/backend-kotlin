@@ -51,8 +51,7 @@ jobs:
 #          IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
+          # push it to ECR not ECS so need to change
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
           docker build -t som2 .
           docker tag som2:latest public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
