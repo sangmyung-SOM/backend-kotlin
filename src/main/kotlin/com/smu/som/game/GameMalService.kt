@@ -53,6 +53,7 @@ class GameMalService {
 			malId = request.malId,
 			point = mal.getPoint(),
 			nextPosition = mal.getPosition(),
+			isEnd = mal.isEnd(),
 			isCatchMal = if(caughtMalId == -1) false else true,
 			catchMalId = caughtMalId,
 			isUpdaMal = if(updaMalId == -1) false else true,

@@ -92,6 +92,10 @@ class Mal (val id : Int) {
 	public fun catch(oppMalList : List<Mal>): Int{
 		checkValid()
 
+		if(this.position == 0){ // 아직 윷판 위에 못올라간 말임
+			return -1
+		}
+
 		for(oppMal in oppMalList){
 			if(oppMal.position == this.position && oppMal.isValid()) { // 잡음
 				oppMal.position = 0
@@ -114,6 +118,10 @@ class Mal (val id : Int) {
 	// 말 업기
 	public fun upda(malList: List<Mal>): Int {
 		checkValid()
+
+		if(this.position == 0){ // 아직 윷판 위에 못올라간 말임
+			return -1
+		}
 
 		for(mal in malList){
 			if(mal.position == this.position && mal.id != this.id && mal.isValid()){ // 업음

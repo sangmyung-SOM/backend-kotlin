@@ -5,7 +5,7 @@ import com.smu.som.game.dto.GameMalResponse
 
 class PlayerTemp(id : String) {
 
-	private var id : String
+	private var id : String // 1P 또는 2P
 	private var malList : MutableList<Mal>
 
 	init {
@@ -71,7 +71,7 @@ class PlayerTemp(id : String) {
 		throw RuntimeException("말을 찾지 못했습니다")
 	}
 
-	public fun getMalList(): MutableList<Mal>{
-		return malList
+	public fun getMalList(): List<Mal>{
+		return this.malList
 	}
 }

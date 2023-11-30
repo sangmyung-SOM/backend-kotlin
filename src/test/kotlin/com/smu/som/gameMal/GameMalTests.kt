@@ -178,4 +178,17 @@ class GameMalTests {
 			playerA.moveMal(mal0A, YutResult.BACK_DO)
 		})
 	}
+
+	@Test
+	public fun 에러테스트(){
+		val playerA = PlayerTemp("1P")
+
+		val mal0A = playerA.findMal(0)
+
+		playerA.moveMal(mal0A, YutResult.BACK_DO)
+		playerA.updaMal(mal0A)
+		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
+
+		playerA.moveMal(mal0A, YutResult.DO)
+	}
 }
