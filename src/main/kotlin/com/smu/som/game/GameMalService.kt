@@ -41,11 +41,12 @@ class GameMalService {
 	public fun moveMal(gameRoom: GameRoom, request: GameMalRequest.MoveMalDTO) : GameMalResponse.MoveMalDTO{
 		val player = gameRoom.findPlayer(request.playerId)
 		val oppPlayer = gameRoom.findOppPlayer(request.playerId)
-		val mal : Mal = player.findMal(request.malId)
 
-		player.moveMal(mal, request.yutResult)
-		val caughtMalId = player.catchMal(mal, oppPlayer)
-		val updaMalId = player.updaMal(mal)
+		player.moveMal(request.malId, request.yutResult)
+		val caughtMalId = player.catchMal(request.malId, oppPlayer)
+		val updaMalId = player.updaMal(request.malId)
+
+		val mal : Mal = player.findMal(request.malId)
 
 		return GameMalResponse.MoveMalDTO(
 			userId = request.userId,
@@ -53,6 +54,7 @@ class GameMalService {
 			malId = request.malId,
 			point = mal.getPoint(),
 			nextPosition = mal.getPosition(),
+			isEnd = mal.isEnd(),
 			isCatchMal = if(caughtMalId == -1) false else true,
 			catchMalId = caughtMalId,
 			isUpdaMal = if(updaMalId == -1) false else true,

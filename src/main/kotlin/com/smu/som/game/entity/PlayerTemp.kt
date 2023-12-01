@@ -5,21 +5,21 @@ import com.smu.som.game.dto.GameMalResponse
 
 class PlayerTemp(id : String) {
 
-	private var id : String
-	private var malList : MutableList<Mal>
+	private var id : String // 1P 또는 2P
+	private var malList : Array<Mal>
 	private var score : Int = 0
 
 	init {
 		this.id = id
-		malList = ArrayList<Mal>()
+		malList = Array<Mal>(4, {i -> Mal(i)})
 
-		for(i in 0 until 4){
-			malList.add(Mal(i))
-		}
 	}
 
 	// 말 이동하기
-	public fun moveMal(mal : Mal, yutResult : YutResult): Int{
+	public fun moveMal(malId : Int, yutResult : YutResult): Int{
+
+		val mal = malList[malId]
+
 		if(!mal.isValid()){
 			throw RuntimeException("사용자가 유효하지 않은 말을 움직이려 함")
 		}
@@ -28,7 +28,10 @@ class PlayerTemp(id : String) {
 	}
 
 	// 말 잡기
-	public fun catchMal(mal : Mal, oppPlayer: PlayerTemp) : Int{
+	public fun catchMal(malId : Int, oppPlayer: PlayerTemp) : Int{
+
+		val mal = malList[malId]
+
 		if(!mal.isValid()){
 			throw RuntimeException("사용자가 유효하지 않은 말을 움직이려 함")
 		}
@@ -37,7 +40,10 @@ class PlayerTemp(id : String) {
 	}
 
 	// 말 업기
-	public fun updaMal(mal : Mal) : Int{
+	public fun updaMal(malId : Int,) : Int{
+
+		val mal = malList[malId]
+
 		if(!mal.isValid()){
 			throw RuntimeException("사용자가 유효하지 않은 말을 움직이려 함")
 		}
@@ -60,20 +66,12 @@ class PlayerTemp(id : String) {
 		return map
 	}
 
-
-	// 말 찾기
-	public fun findMal(malId : Int) : Mal{
-		for(mal in malList){
-			if(mal.id == malId){
-				return mal
-			}
-		}
-
-		throw RuntimeException("말을 찾지 못했습니다")
+	public fun findMal(malId: Int): Mal{
+		return malList[malId]
 	}
 
-	public fun getMalList(): MutableList<Mal>{
-		return malList
+	public fun getMalList(): Array<Mal>{
+		return this.malList
 	}
 
 	fun addScore(score: Int) {
