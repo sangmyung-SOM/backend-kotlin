@@ -7,6 +7,7 @@ class PlayerTemp(id : String) {
 
 	private var id : String // 1P 또는 2P
 	private var malList : Array<Mal>
+	private var score : Int = 0
 
 	init {
 		this.id = id
@@ -71,5 +72,13 @@ class PlayerTemp(id : String) {
 
 	public fun getMalList(): Array<Mal>{
 		return this.malList
+	}
+
+	fun addScore(score: Int) {
+		this.score += score
+	}
+
+	fun getScore(): Int {
+		return score
 	}
 }
