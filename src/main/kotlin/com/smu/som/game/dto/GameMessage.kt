@@ -45,4 +45,22 @@ class GameMessage {
 		var yut: String?
 	)
 
+	data class GetGameDisconnect(
+		@JsonProperty("messageType")
+		var type: GameStateType?,
+		@JsonProperty("room_id")
+		var roomId: String?,
+		@JsonProperty("player_id")
+		var playerId: String?
+	)
+
+	class GetTurnChange(
+		@JsonProperty("messageType")
+		var type: GameStateType?,
+		@JsonProperty("room_id")
+		var roomId: String?,
+		@JsonProperty("player_id")
+		var playerId: String?
+	)
+
 }

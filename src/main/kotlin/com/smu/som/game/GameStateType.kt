@@ -10,6 +10,7 @@ enum class GameStateType {
 	WIN, LOSE,
 	MOVE, SCORE,
 	QUESTION, ANSWER,
-	ANSWER_RESULT
+	ANSWER_RESULT,
+	CATCH_MAL
 
 }

@@ -23,6 +23,12 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	var gameSetting = HashMap<GameRoom, List<String>>() // 게임방, 게임설정
 
 
+	// 게임 연결 끊김
+	@MessageMapping("/game/disconnect")
+	fun gameDisconnect(gameMessage: GameMessage.GetGameDisconnect) {
+//		println("게임 연결 끊김")
+	}
+
 	@MessageMapping("/game/message")
 	fun gameWait(gameMessage: GameMessage.GetGameInfo){
 
@@ -188,6 +194,32 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val gameRoom: GameRoom = findGameRoom(request.gameId)
 
 		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
+
+		// 말 잡은 경우
+		if(response.isCatchMal) {
+
+			var gameMessage = GameMessage.GetThrowResult(
+				roomId = request.gameId,
+				playerId = request.playerId,
+				yut = request.yutResult.toString(),
+				type = GameStateType.CATCH_MAL
+			)
+
+			println("말 잡았다고 알려주기")
+			println("gameMessage = ${gameMessage}")
+
+			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
+		} else {
+			val turnChange = GameMessage.GetTurnChange(
+				roomId = request.gameId,
+				playerId = request.playerId,
+				type = GameStateType.TURN_CHANGE
+			)
+
+//			println("턴 넘기기")
+//			println("turnChange = ${turnChange}")
+			sendingOperations.convertAndSend("/topic/game/turn/"+turnChange.roomId,turnChange)
+		}
 
 		val url = StringBuilder("/topic/game/")
 			.append(request.gameId)
