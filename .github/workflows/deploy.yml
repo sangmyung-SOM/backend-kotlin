@@ -59,6 +59,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
           docker stop test && docker rm test
           docker run -e TZ=Asia/Seoul -d -p 8080:8080 --name test --restart always public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
         
