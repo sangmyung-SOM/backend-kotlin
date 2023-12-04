@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  deploy:
+  build:
     name: Deploy
     runs-on: ubuntu-latest
 
@@ -57,13 +57,26 @@ jobs:
           docker tag som2:latest public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
           docker push public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      - uses: actions/checkout@v3
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
+  deploy:
+    needs: build
+    name: CD
+    runs-on: [self-hosted, label-ecr-test]
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ap-northeast-2
-          run: |
-            docker stop test && docker rm test
-            docker run -e TZ=Asia/Seoul -d -p 8080:8080 --name test --restart always public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Pull image from Amazon ECR and restart container
+        run: |
+          docker pull public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          docker stop test && docker rm test
+          docker run -d --name test -p 8080:8080 --restart unless-stopped public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+  
