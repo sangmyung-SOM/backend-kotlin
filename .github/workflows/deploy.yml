@@ -56,3 +56,9 @@ jobs:
           docker build -t som2 .
           docker tag som2:latest public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
           docker push public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
+      - name: Deploy to EC2
+        run: |
+          docker stop test && docker rm test
+          docker run -e TZ=Asia/Seoul -d -p 8080:8080 --name test --restart always public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+        
