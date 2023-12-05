@@ -61,7 +61,7 @@ jobs:
       - name: EC2 Docker Run
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.AWS_EC2_URL }}
+          host: ec2-user@ec2-3-37-84-188.ap-northeast-2.compute.amazonaws.com
           username: ubuntu
           key: ${{ secrets.somkey }}
           script: |
