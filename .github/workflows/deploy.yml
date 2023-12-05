@@ -66,7 +66,7 @@ jobs:
           key: ${{ secrets.somkey }}
           port: 22
           script: |
-            aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
+            aws ecr-public get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
             docker stop CDtest && docker rm CDtest
             docker rmi public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
             docker run -it -d --name CDtest -p 8080:8080 public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
