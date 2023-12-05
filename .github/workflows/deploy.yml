@@ -53,7 +53,7 @@ jobs:
         run: |
           # Build a docker container and
           # push it to ECR not ECS so need to change
-          aws ecr-public get-login-password --region northeast-2 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
           docker build -t som2 .
           docker tag som2:latest public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
           docker push public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
