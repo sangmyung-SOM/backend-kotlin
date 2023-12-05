@@ -58,7 +58,7 @@ jobs:
           docker tag som2:latest public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
           docker push public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      - name: EC2 Docker Run
+      - name: EC2 Docker Run2
         uses: appleboy/ssh-action@master
         with:
           host: ec2-3-37-84-188.ap-northeast-2.compute.amazonaws.com
