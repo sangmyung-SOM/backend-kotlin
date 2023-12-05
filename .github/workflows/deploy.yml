@@ -65,6 +65,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.somkey }}
           script: |
+            aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
             docker stop CDtest && docker rm CDtest
             docker rmi public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
             docker run -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_KEY }} -e AWS_DEFAULT_REGION=ap-northeast-2 -d --name CDtest -p 8080:8080 public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
