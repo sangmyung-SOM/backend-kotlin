@@ -14,17 +14,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
       - name: Setup to JDK17
         uses: actions/setup-java@v2
         with:
@@ -43,6 +32,17 @@ jobs:
 #          docker login -u ${{ secrets.BSH_DOCKER_USERNAME }} -p ${{ secrets.BSH_DOCKER_PASSWORD }}
 #          docker build -t ${{ secrets.BSH_DOCKER_REPO }} .
 #          docker push ${{ secrets.DOCKER_REPO }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
@@ -63,12 +63,12 @@ jobs:
         with:
           host: ec2-3-37-84-188.ap-northeast-2.compute.amazonaws.com
           username: ec2-user
-          key: ${{ secrets.somkey }}
+          port: 22
           script: |
             aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
             docker stop CDtest && docker rm CDtest
             docker rmi public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
-            docker run -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_KEY }} -e AWS_DEFAULT_REGION=ap-northeast-2 -d --name CDtest -p 8080:8080 public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+            docker run -it -d --name CDtest -p 8080:8080 public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
       #      - name: connect EC2
 #        run: |
