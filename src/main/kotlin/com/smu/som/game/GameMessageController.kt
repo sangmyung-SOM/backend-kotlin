@@ -2,6 +2,7 @@ package com.smu.som.game
 
 import com.smu.som.game.dto.*
 import com.smu.som.game.entity.PlayerTemp
+import com.smu.som.game.entity.YutResult
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -21,6 +22,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	var roomList = HashMap<GameRoom, String>() // 게임방, 유저아이디
 	var nameList = ArrayList<String>()
 	var gameSetting = HashMap<GameRoom, List<String>>() // 게임방, 게임설정
+	var yuts = IntArray(6){ 0 }
 
 
 	// 게임 연결 끊김
@@ -119,23 +121,16 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 	@MessageMapping("/game/throw")
 	fun yutThrow(gameMessage : GameMessage.GetThrowResult){
-
-		// 첫번째로 던졌을때 말 추가 버튼 클릭 없이 말 이동
-		if(GameStateType.FIRST_THROW == gameMessage.type){
-			if(gameMessage.yut == "4" || gameMessage.yut == "5") //윷이나 모
-			{
-				gameMessage.type = GameStateType.ONE_MORE_THROW
-			}
-			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
-
-		}
-
+		val gameService = GameService()
+		val num = gameService.playGame(yuts.sum())
+		yuts[num] += 1
+		
 		if (GameStateType.THROW == gameMessage.type) {
-			if(gameMessage.yut == "4" || gameMessage.yut == "5") //윷이나 모
+			if(num == 4 || num == 5) //윷이나 모
 			{
 				gameMessage.type = GameStateType.ONE_MORE_THROW
 			}
-			gameMessage.yut = gameMessage.yut // 윷 던진 결과
+			gameMessage.yut = num.toString() // 윷 던진 결과
 
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
 		}
@@ -215,6 +210,8 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 				playerId = request.playerId,
 				type = GameStateType.TURN_CHANGE
 			)
+			// 윷 리스트 초기화
+			yuts = IntArray(6) { 0 }
 
 //			println("턴 넘기기")
 //			println("turnChange = ${turnChange}")
