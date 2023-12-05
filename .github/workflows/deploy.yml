@@ -58,6 +58,7 @@ jobs:
           docker push public.ecr.aws/f9s3i1t6/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
       - name: Pull image from Amazon ECR and restart container
+        uses: appleboy/ssh-action@master
         run: |
           echo "${{ secrets.somkey }}" >> key.pem
           chmod 400 key.pem
