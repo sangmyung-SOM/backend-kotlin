@@ -63,6 +63,7 @@ jobs:
         with:
           host: ec2-3-37-84-188.ap-northeast-2.compute.amazonaws.com
           username: ec2-user
+          key: ${{ secrets.somkey }}
           port: 22
           script: |
             aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f9s3i1t6
