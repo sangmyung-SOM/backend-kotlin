@@ -55,7 +55,7 @@ jobs:
       - name: AWS EC2 Connection
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ec2-3-37-84-188.ap-northeast-2.compute.amazonaws.com
           username: ${{ secrets.EC2_USERNAME }}
           password: ${{ secrets.EC2_PASSWORD }}
           port: ${{ secrets.EC2_SSH_PORT }}
