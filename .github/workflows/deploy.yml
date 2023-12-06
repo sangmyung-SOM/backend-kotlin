@@ -57,7 +57,7 @@ jobs:
         with:
           host: ec2-3-37-84-188.ap-northeast-2.compute.amazonaws.com
           username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
+          key: ${{ secrets.somkey }}
           port: ${{ secrets.EC2_SSH_PORT }}
           timeout: 60s
           script: |
