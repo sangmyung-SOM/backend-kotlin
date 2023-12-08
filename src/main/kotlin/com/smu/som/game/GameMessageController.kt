@@ -2,7 +2,6 @@ package com.smu.som.game
 
 import com.smu.som.game.dto.*
 import com.smu.som.game.entity.PlayerTemp
-import com.smu.som.gameroom.service.GameRoomService
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.lang.RuntimeException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 @RestController
 @RequiredArgsConstructor
@@ -209,6 +206,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
 
+		val num = request.yutResult.ordinal
+		yuts[num] -= 1
+
+
 		// 말 잡은 경우
 		if(response.isCatchMal) {
 
@@ -223,7 +224,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			println("gameMessage = ${gameMessage}")
 
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
-		} else {
+		}
+		// 윷 합이 0인 경우 -> 턴 넘기기 -- 아직 수정 중
+		else if (yuts.sum() == 0)
+		{
 			val turnChange = GameMessage.GetTurnChange(
 				roomId = request.gameId,
 				playerId = request.playerId,
@@ -232,8 +236,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			// 윷 리스트 초기화
 			yuts = IntArray(6) { 0 }
 
-//			println("턴 넘기기")
-//			println("turnChange = ${turnChange}")
+
 			sendingOperations.convertAndSend("/topic/game/turn/"+turnChange.roomId,turnChange)
 		}
 
@@ -253,9 +256,13 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
 
 		player?.getMalList()?.forEach {
-			// 말이 도착지점에 도착했으면 스코어 +1
+			// 이미 점수를 얻은 말이면 넘어감
+			if(it.isScored) {
+				return@forEach
+			}
 			if(it.isEnd()) {
-				player.addScore(1)
+				player.addScore(1, it.id)
+				it.isScored = true
 			}
 		}
 
