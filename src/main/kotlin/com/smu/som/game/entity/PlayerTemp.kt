@@ -1,17 +1,15 @@
 package com.smu.som.game.entity
 
-import com.smu.som.game.dto.GameMalRequest
-import com.smu.som.game.dto.GameMalResponse
-
 class PlayerTemp(id : String) {
 
 	private var id : String // 1P 또는 2P
 	private var malList : Array<Mal>
-	private var score : Int = 0
+	private var score : IntArray
 
 	init {
 		this.id = id
 		malList = Array<Mal>(4, {i -> Mal(i)})
+		this.score = IntArray(4){ 0 }
 
 	}
 
@@ -74,11 +72,12 @@ class PlayerTemp(id : String) {
 		return this.malList
 	}
 
-	fun addScore(score: Int) {
-		this.score += score
+	fun addScore(score: Int, id: Int) {
+		// id당 1번씩만 점수를 추가할 수 있음 (중복 방지)
+		this.score[id] += score
 	}
 
 	fun getScore(): Int {
-		return score
+		return score.sum()
 	}
 }
