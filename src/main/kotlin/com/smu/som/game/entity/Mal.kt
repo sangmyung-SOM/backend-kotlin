@@ -6,12 +6,14 @@ class Mal (val id : Int) {
 	private var updaMalList : MutableList<Mal> // 업은 말
 	private var isEnd : Boolean
 	private var isUped : Boolean // 다른 말에게 업혔는지 여부
+	var isScored: Boolean
 
 	init {
 		this.position = 0
 		this.updaMalList = ArrayList()
 		this.isEnd = false
 		this.isUped = false
+		this.isScored = false
 	}
 
 	// 말 움직이기
@@ -19,9 +21,11 @@ class Mal (val id : Int) {
 		checkValid()
 
 		val nextPosition = findNextPosition(yutResult)
+		val nextPositionValue = nextPosition.last()
 
 		// 말이 도착했을 경우
-		if(nextPosition.get(0) == 0 && this.position != 0){
+		if(nextPositionValue == 0 && this.position != 0){
+			println("말이 도착했습니다. $id")
 			finish()
 
 			// 업은 말에 대해서도 도착 처리 해줌
@@ -38,7 +42,7 @@ class Mal (val id : Int) {
 	// 말 움직이는 위치 찾기
 	public fun findNextPosition(yutResult: YutResult) : List<Int>{
 
-		checkValid()
+//		checkValid()
 
 		val movements = ArrayList<Int>()
 
