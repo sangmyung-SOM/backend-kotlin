@@ -15,13 +15,13 @@ class Mal (val id : Int) {
 	}
 
 	// 말 움직이기
-	public fun move(yutResult: YutResult) : Int{
+	public fun move(yutResult: YutResult) : List<Int>{
 		checkValid()
 
 		val nextPosition = findNextPosition(yutResult)
 
 		// 말이 도착했을 경우
-		if(nextPosition == 0 && this.position != 0){
+		if(nextPosition.get(0) == 0 && this.position != 0){
 			finish()
 
 			// 업은 말에 대해서도 도착 처리 해줌
@@ -30,89 +30,97 @@ class Mal (val id : Int) {
 			}
 		}
 
-		this.position = nextPosition
+		this.position = nextPosition.last()
 
 		return nextPosition
 	}
 
 	// 말 움직이는 위치 찾기
-	public fun findNextPosition(yutResult: YutResult) : Int{
+	public fun findNextPosition(yutResult: YutResult) : List<Int>{
 
 		checkValid()
+
+		val movements = ArrayList<Int>()
 
 		// 빽도일 경우
 		if(yutResult == YutResult.BACK_DO){
 			when(position){
-				0 -> {return 0}
-				1 -> { return 20 }
-				21 -> {return 5}
-				23->{return 27}
-				29->{return 23}
+				0 -> {movements.add(0)}
+				1 -> { movements.add(20)}
+				21 -> {movements.add(5)}
+				23->{movements.add(27)}
+				29->{movements.add(23)}
 				// 끝
-				20->{return 0}
+				20->{movements.add(0)}
 				// 나머지
-				else -> {return position-1}
+				else -> {movements.add(position-1)}
 			}
+			return movements
 		}
 
 		// 도~모 일경우
 		var nextPosition : Int = position
 		when(nextPosition){ // 교차점에서 시작할 경우를 위해서
 			// 교차점일 경우
-			5->{nextPosition = 21}
-			10->{nextPosition = 26}
-			23->{nextPosition = 29}
+			5->{movements.add(21); nextPosition = 21}
+			10->{movements.add(26); nextPosition = 26}
+			23->{movements.add(29); nextPosition = 29}
 			// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
-			25->{nextPosition = 15}
-			27->{nextPosition = 23}
-			30->{nextPosition = 20}
+			25->{movements.add(15); nextPosition = 15}
+			27->{movements.add(23); nextPosition = 23}
+			30->{movements.add(20); nextPosition = 20}
 			// 끝
-			20->{ return 0 }
+			20->{ movements.add(0); return movements }
 			// 나머지
-			else->{nextPosition++}
+			else->{ movements.add(nextPosition+1); nextPosition++}
 		}
 
 		for(i in 0 until yutResult.move-1){
 			when(nextPosition){
 				// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
-				25->{nextPosition =15}
-				27->{nextPosition =23}
-				30->{nextPosition =20}
+				25->{movements.add(15); nextPosition =15}
+				27->{movements.add(23); nextPosition =23}
+				30->{movements.add(20); nextPosition =20}
 				// 끝
-				20->{ return 0 }
+				20->{ movements.add(0); return movements }
 				// 나머지
-				else->{nextPosition++}
+				else->{movements.add(nextPosition+1); nextPosition++}
 			}
 		}
 
-		return nextPosition
+		return movements
 	}
 
 	// 말 잡기
-	public fun catch(oppMalList : Array<Mal>): Int{
+	public fun catch(oppMalList : Array<Mal>): List<Int>{
 		checkValid()
 
+		val tempUpdaMalList = ArrayList<Int>()
+
 		if(this.position == 0){ // 아직 윷판 위에 못올라간 말임
-			return -1
+			return tempUpdaMalList
 		}
 
 		for(oppMal in oppMalList){
 			if(oppMal.position == this.position && oppMal.isValid()) { // 잡음
 				oppMal.position = 0
 				oppMal.isUped = false
+				tempUpdaMalList.add(oppMal.id)
 
 				for(oppUpdaMal in oppMal.updaMalList){ // 잡은 말의 업은 말들에 대해 처리
 					oppUpdaMal.position = 0
 					oppUpdaMal.isUped = false
 					oppUpdaMal.updaMalList.clear()
+					tempUpdaMalList.add(oppUpdaMal.id)
 				}
+
 				oppMal.updaMalList.clear()
 
-				return oppMal.id
+				return tempUpdaMalList
 			}
 		}
 
-		return -1
+		return tempUpdaMalList
 	}
 
 	// 말 업기

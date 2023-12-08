@@ -16,7 +16,7 @@ class PlayerTemp(id : String) {
 	}
 
 	// 말 이동하기
-	public fun moveMal(malId : Int, yutResult : YutResult): Int{
+	public fun moveMal(malId : Int, yutResult : YutResult): List<Int>{
 
 		val mal = malList[malId]
 
@@ -28,7 +28,7 @@ class PlayerTemp(id : String) {
 	}
 
 	// 말 잡기
-	public fun catchMal(malId : Int, oppPlayer: PlayerTemp) : Int{
+	public fun catchMal(malId : Int, oppPlayer: PlayerTemp) : List<Int>{
 
 		val mal = malList[malId]
 
@@ -60,7 +60,7 @@ class PlayerTemp(id : String) {
 		var map = HashMap<Int, Int>() // 말id, nextPosition
 
 		for(mal in malList){
-			map.put(mal.id, mal.findNextPosition(yutResult))
+			map.put(mal.id, mal.findNextPosition(yutResult).last())
 		}
 
 		return map
