@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Service
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
 @Service
 @Slf4j
@@ -30,7 +33,9 @@ class GameRoomService (var gameRooms: HashMap<String, GameRoomSetting> = LinkedH
 	}
 
 	fun deleteById(roomId: String) {
-		gameRooms.remove(roomId)
+		if (findById(roomId) != null) {
+			gameRooms.remove(roomId)
+		}
 	}
 
 }

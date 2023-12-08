@@ -2,7 +2,7 @@ package com.smu.som.game
 
 import com.smu.som.game.dto.*
 import com.smu.som.game.entity.PlayerTemp
-import com.smu.som.game.entity.YutResult
+import com.smu.som.gameroom.service.GameRoomService
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.web.bind.annotation.RestController
 import java.lang.RuntimeException
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -19,16 +20,34 @@ import kotlin.collections.HashMap
 class GameMessageController(val sendingOperations: SimpMessageSendingOperations, val gameMalService: GameMalService)
 {
 
-	var roomList = HashMap<GameRoom, String>() // 게임방, 유저아이디
-	var nameList = ArrayList<String>()
-	var gameSetting = HashMap<GameRoom, List<String>>() // 게임방, 게임설정
+	var roomList = ConcurrentHashMap<GameRoom, String>() // 게임방, 유저아이디
 	var yuts = IntArray(6){ 0 }
 
 
 	// 게임 연결 끊김
 	@MessageMapping("/game/disconnect")
 	fun gameDisconnect(gameMessage: GameMessage.GetGameDisconnect) {
-//		println("게임 연결 끊김")
+
+		println("게임 연결 끊김 + ${gameMessage.playerId}")
+		sendingOperations.convertAndSend("/topic/game/disconnect/${gameMessage.roomId}", gameMessage)
+
+		var isDisconnect = false
+		// 1P, 2P 둘 중 연결이 한명이라도 끊기면 게임방 삭제
+		roomList.forEach {
+			if (it.key.roomId == UUID.fromString(gameMessage.roomId) && it.key.turn == gameMessage.playerId) {
+				isDisconnect = true
+			}
+		}
+
+		if (isDisconnect) {
+			roomList.forEach {
+				if (it.key.roomId == UUID.fromString(gameMessage.roomId)) {
+					roomList.remove(it.key)
+				}
+			}
+
+		}
+
 	}
 
 	@MessageMapping("/game/message")
@@ -240,7 +259,8 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			}
 		}
 
-		request.player1Score = gameRoom.player1.getScore()
+//		request.player1Score = gameRoom.player1.getScore()
+		request.player1Score = 4
 		request.player2Score = gameRoom.player2.getScore()
 
 		println("request.playerId = ${request.playerId}, " +
@@ -267,6 +287,9 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			.toString()
 
 		sendingOperations.convertAndSend(url, gameWinnerResponse)
+
+		// 게임 종료 후 방 삭제
+		roomList.remove(findGameRoom(gameId))
 
 	}
 
