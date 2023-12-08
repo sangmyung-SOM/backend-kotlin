@@ -259,8 +259,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			}
 		}
 
-//		request.player1Score = gameRoom.player1.getScore()
-		request.player1Score = 4
+		request.player1Score = gameRoom.player1.getScore()
 		request.player2Score = gameRoom.player2.getScore()
 
 		println("request.playerId = ${request.playerId}, " +
