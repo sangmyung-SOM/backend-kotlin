@@ -18,6 +18,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      #this part needs changing how to make yml file to way using git's secret variable
       - uses: actions/checkout@v2
       - name: Resources Setting
         run: |
@@ -60,6 +61,8 @@ jobs:
         run: |
           aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
+
+      #this part needs change host using security
       - name: AWS EC2 Connection
         uses: appleboy/ssh-action@master
         with:
