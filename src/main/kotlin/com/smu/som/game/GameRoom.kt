@@ -18,6 +18,8 @@ class GameRoom(var roomId: UUID, var sender: String?, var turn: String?, var pro
 	val player1 : PlayerTemp = PlayerTemp("1P")
 	val player2 : PlayerTemp = PlayerTemp("2P")
 
+	var yuts = IntArray(6){ 0 }
+
 	companion object {
 		fun of(roomId: UUID, sender: String?, turn: String?, profileURL: String?): GameRoom {
 			return GameRoom(

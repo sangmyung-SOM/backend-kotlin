@@ -18,7 +18,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 {
 
 	var roomList = ConcurrentHashMap<GameRoom, String>() // 게임방, 유저아이디
-	var yuts = IntArray(6){ 0 }
 
 
 	// 게임 연결 끊김
@@ -138,8 +137,9 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	@MessageMapping("/game/throw")
 	fun yutThrow(gameMessage : GameMessage.GetThrowResult){
 		val gameService = GameService()
-		val num = gameService.playGame(yuts.sum())
-		yuts[num] += 1
+		val gameRoom = findGameRoom(gameMessage.roomId!!)
+		val num = gameService.playGame(gameRoom.yuts.sum())
+		gameRoom.yuts[num] += 1
 		
 		if (GameStateType.THROW == gameMessage.type) {
 			if(num == 4 || num == 5) //윷이나 모
@@ -184,7 +184,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 
 		// 나머진 다 service 클래스에서
-		val response = gameMalService.getAllMalMovement(gameRoom, request)
+		val response: GameMalResponse.GetMalMovePosition = gameMalService.getAllMalMovement(gameRoom, request)
 
 		val url = StringBuilder("/topic/game/")
 			.append(request.gameId)
@@ -207,7 +207,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
 
 		val num = request.yutResult.ordinal
-		yuts[num] -= 1
+		gameRoom.yuts[num] -= 1
 
 
 		// 말 잡은 경우
@@ -226,7 +226,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
 		}
 		// 윷 합이 0인 경우 -> 턴 넘기기 -- 아직 수정 중
-		else if (yuts.sum() == 0)
+		else if (gameRoom.yuts.sum() == 0)
 		{
 			val turnChange = GameMessage.GetTurnChange(
 				roomId = request.gameId,
@@ -234,9 +234,9 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 				type = GameStateType.TURN_CHANGE
 			)
 			// 윷 리스트 초기화
-			yuts = IntArray(6) { 0 }
+			gameRoom.yuts = IntArray(6) { 0 }
 
-
+			println("턴 변경!")
 			sendingOperations.convertAndSend("/topic/game/turn/"+turnChange.roomId,turnChange)
 		}
 

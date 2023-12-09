@@ -14,12 +14,14 @@ class GameMalResponse {
 		var userId : Long
 		var playerId : String
 		var yutResult : YutResult
+		var newMalId : Int
 		var malList : List<MalMoveInfo>
 
-		constructor(userId:Long, playerId:String, yutResult: YutResult, malList: List<MalMoveInfo>){
+		constructor(userId:Long, playerId:String, yutResult: YutResult, newMalId: Int, malList: List<MalMoveInfo>){
 			this.userId = userId
 			this.playerId = playerId
 			this.yutResult = yutResult
+			this.newMalId = newMalId
 			this.malList = malList
 		}
 	}
