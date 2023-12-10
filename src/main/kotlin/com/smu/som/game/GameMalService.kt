@@ -12,12 +12,19 @@ class GameMalService {
 	// 말 이동할 수 있는 위치 조회
 	public fun getAllMalMovement(gameRoom: GameRoom, request: GameMalRequest.GetMalMovePositionDTO) : GameMalResponse.GetMalMovePosition{
 		val player : PlayerTemp = gameRoom.findPlayer(request.playerId)
+		var newMalId : Int = -1 // 새로 추가할 수 있는 말
 
 		// 말 움직일 수 있는 위치 찾기
 		val nextPositionMap = player.findAllMalMovePosition(request.yutResult)
 
-		var malMoveInfoList = ArrayList<GameMalResponse.MalMoveInfo>()
+		var malMoveInfoList: ArrayList<GameMalResponse.MalMoveInfo>  = ArrayList()
 		for(mal in player.getMalList()){
+			if(mal.getPosition() == 0){ // 새로 추가할 수 있는 말
+				newMalId = mal.id
+				continue
+			}
+
+			// 기존에 윷판에 있던 말
 			malMoveInfoList.add(
 				GameMalResponse.MalMoveInfo(
 					malId = mal.id,
@@ -33,6 +40,7 @@ class GameMalService {
 			userId = request.userId,
 			playerId = request.playerId,
 			yutResult = request.yutResult,
+			newMalId = newMalId,
 			malList = malMoveInfoList
 		);
 	}
