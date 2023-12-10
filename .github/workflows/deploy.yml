@@ -74,6 +74,7 @@ jobs:
           script: |
             sudo docker stop deploy-test
             sudo docker rm deploy-test
+            sudo docker rmi deploy-test
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/deploy-test
             sudo docker run -it -d -p 8080:8080 --name deploy-test ${{ secrets.DOCKERHUB_USERNAME }}/deploy-test
 
