@@ -24,7 +24,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	@MessageMapping("/game/disconnect")
 	fun gameDisconnect(gameMessage: GameMessage.GetGameDisconnect) {
 
-		println("게임 연결 끊김 + ${gameMessage.playerId}")
 		sendingOperations.convertAndSend("/topic/game/disconnect/${gameMessage.roomId}", gameMessage)
 
 		var isDisconnect = false
@@ -83,8 +82,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			}
 
 			println("WAIT STATE : " + gameMessage.playerId + " " + gameMessage.sender + " " + gameMessage.roomId)
-			println("profileURL : " + gameMessage.profileURL_1P + " " + gameMessage.profileURL_2P)
-
 
 			//1P가 있는 방에 2P가 들어오면 게임 시작 메시지 전송
 			if (gameMessage.playerId == "2P") {
