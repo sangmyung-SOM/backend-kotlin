@@ -17,10 +17,16 @@ class MessageController(
     @MessageMapping("/chat/message")
     fun enter(chatMessage: ChatMessage){
         if (MessageType.ENTER.equals(chatMessage.type)){
-            chatMessage.message = chatMessage.sender + "enter"
+            chatMessage.message = chatMessage.sender + " 님이 입장했습니다."
         }
+		else {
+			// 게임 방으로 메시지 전송
+			chatMessage.gameRoomMsg = chatMessage.sender + " : " + chatMessage.message
+			sendingOperations.convertAndSend("/topic/game/chat/room/"+chatMessage.roomId,chatMessage)
+		}
 
         sendingOperations.convertAndSend("/topic/chat/room/"+chatMessage.roomId,chatMessage)
+
     }
 
 	// 기존 코드로 테스트 중이라서 잠시 복구 합니다.

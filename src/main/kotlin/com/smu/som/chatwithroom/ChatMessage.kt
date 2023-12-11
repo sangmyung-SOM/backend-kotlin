@@ -11,5 +11,6 @@ data class ChatMessage(
 	var roomId :String?,
 	@JsonProperty("sender")
 	var sender:String?,
+	var gameRoomMsg: String? = "",
 	var message:String?=""
 )
