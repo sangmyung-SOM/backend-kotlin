@@ -123,26 +123,18 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 	}
 
-	@MessageMapping("/game/start")
-	fun gameStart(gameMessage: GameMessage.GetGameInfo){
-		println("START : $gameMessage")
-
-		sendingOperations.convertAndSend("/topic/game/start/"+gameMessage.roomId,gameMessage)
-
-	}
-
 	@MessageMapping("/game/throw")
 	fun yutThrow(gameMessage : GameMessage.GetThrowResult){
 		val gameService = GameService()
 		val gameRoom = findGameRoom(gameMessage.roomId!!)
-		val num = gameService.playGame(gameRoom.yuts.sum())
-		gameRoom.yuts[num] += 1
+		val player = gameRoom.findPlayer(gameMessage.playerId!!)
+		val num = gameService.playGame(player.yuts.sum())
+		player.yuts[num] += 1
 		
 		if (GameStateType.THROW == gameMessage.type) {
 			if(num == 4 || num == 5) //윷이나 모
-			{
 				gameMessage.type = GameStateType.ONE_MORE_THROW
-			}
+
 			gameMessage.yut = num.toString() // 윷 던진 결과
 
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
@@ -171,8 +163,9 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		request.penalty = player?.getPenalty()!!
 		sendingOperations.convertAndSend("/topic/game/question/"+request.roomId, request)
 
-		// 패널티로 말 놓기 불가능 -- 말 놓기 버튼 비활성화 : 구현하기
-
+		// 턴 변경
+		turnChange(request.roomId, request.playerId, GameStateType.TURN_CHANGE)
+		player.yuts = IntArray(6) {0}
 	}
 
 	// 상대방에게 내가 원하는 질문
@@ -202,6 +195,12 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 		var gameRoom : GameRoom = findGameRoom(request.gameId)
 
+		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
+		if (player?.getPenalty() == 1) {
+			println("페널티가 있어서 말을 놓을 수 없습니다. ${player?.getPenalty()}")
+			player.addPenalty() // 2로 유지 시키기 ( 1로 유지하는 경우 조건문에서 걸림 )
+			return
+		}
 
 		// 나머진 다 service 클래스에서
 		val response: GameMalResponse.GetMalMovePosition = gameMalService.getAllMalMovement(gameRoom, request)
@@ -223,12 +222,17 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		println("request.malId = ${request.malId}")
 
 		val gameRoom: GameRoom = findGameRoom(request.gameId)
+		val player = gameRoom.findPlayer(request.playerId!!)
 
 		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
 
 		val num = request.yutResult.ordinal
-		gameRoom.yuts[num] -= 1
-
+		println("말 이동")
+		for (i in 0..5) {
+			println("$i : " + player.yuts[i])
+		}
+		player.yuts[num] -= 1
+		println("player.yuts[num] = ${player.yuts[num]} ${request.playerId}")
 
 		// 말 잡은 경우
 		if(response.isCatchMal) {
@@ -240,34 +244,23 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 				type = GameStateType.CATCH_MAL
 			)
 
-			println("말 잡았다고 알려주기")
-			println("gameMessage = ${gameMessage}")
-
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
 		}
-		// 턴 변경 아직 수정중 - 소영
-		else if (gameRoom.yuts.sum() > 0 && (num == 4 || num == 5)) {
-				val notTurnChange = GameMessage.GetTurnChange(
-					roomId = request.gameId,
-					playerId = request.playerId,
-					type = GameStateType.MY_TURN
-				)
-				println("턴 변경하지 않고 한 번 더 던질 수 있음")
-				sendingOperations.convertAndSend("/topic/game/turn/"+notTurnChange.roomId,notTurnChange)
-			}
-		// 윷 합이 0인 경우 : 윷이나 모가 안나옴 -> 턴 변경
-		else if (gameRoom.yuts.sum() == 0)
+		// 윷이나 모가 나왔는데 윷을 한 번 더 던지기 전에 말을 이동시키는 경우 -> 턴 변경하지 않음
+		else if (player.yuts.sum() == 0 && (num == 4 || num == 5)) {
+			turnChange(request.gameId, request.playerId, GameStateType.ONE_MORE_THROW)
+			player.yuts = IntArray(6) { 0 }
+		}
+		// 윷이나 모가 나왔는데 윷을 한 번 더 던지기 전에 말을 이동시키지 않은 경우 -> 턴 변경
+		else if (player.yuts.sum() == 1 && (num != 4 && num != 5)) {
+			turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
+			// 윷이나 모 결과가 아직 남아있기 때문에 초기화 하지 않음
+		}
+		// 윷이나 모가 안나오고 도 개 걸 빽도 중 한가지가 나온 경우 -> 턴 변경
+		else if (player.yuts.sum() == 0)
 		{
-			val turnChange = GameMessage.GetTurnChange(
-				roomId = request.gameId,
-				playerId = request.playerId,
-				type = GameStateType.TURN_CHANGE
-			)
-			// 윷 리스트 초기화
-			gameRoom.yuts = IntArray(6) { 0 }
-
-			println("턴 변경!")
-			sendingOperations.convertAndSend("/topic/game/turn/"+turnChange.roomId,turnChange)
+			turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
+			player.yuts = IntArray(6) { 0 }
 		}
 
 		val url = StringBuilder("/topic/game/")
@@ -370,5 +363,16 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 
 		throw RuntimeException("게임을 찾을 수 없음.")
+	}
+
+	private fun turnChange(gameId: String, playerId: String, type: GameStateType) {
+		val turnChange = GameMessage.GetTurnChange(
+			roomId = gameId,
+			playerId = playerId,
+			type = type
+		)
+
+		println("턴 변경 ${turnChange.type} ${turnChange.playerId}")
+		sendingOperations.convertAndSend("/topic/game/turn/" + turnChange.roomId, turnChange)
 	}
 }
