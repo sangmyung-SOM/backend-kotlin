@@ -7,6 +7,7 @@ class PlayerTemp(id : String) {
 	private var score : IntArray
 	private var passCard : Int
 	private var penalty : Int
+	var yuts : IntArray
 
 	init {
 		this.id = id
@@ -14,6 +15,7 @@ class PlayerTemp(id : String) {
 		this.score = IntArray(4){ 0 }
 		this.passCard = 0
 		this.penalty = 0
+		this.yuts = IntArray(6){ 0 }
 
 	}
 
