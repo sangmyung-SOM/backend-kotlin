@@ -54,13 +54,22 @@ class GameMessage {
 		var playerId: String?
 	)
 
-	class GetTurnChange(
+	data class GetTurnChange(
 		@JsonProperty("messageType")
 		var type: GameStateType?,
 		@JsonProperty("room_id")
 		var roomId: String?,
 		@JsonProperty("player_id")
 		var playerId: String?
+	)
+
+	data class GetPassWish (
+		@JsonProperty("room_id")
+		var roomId: String?,
+		@JsonProperty("player_id")
+		var playerId: String?,
+		@JsonProperty("pass_card")
+		var passCard: Int?
 	)
 
 }

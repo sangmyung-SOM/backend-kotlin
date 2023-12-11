@@ -5,11 +5,15 @@ class PlayerTemp(id : String) {
 	private var id : String // 1P 또는 2P
 	private var malList : Array<Mal>
 	private var score : IntArray
+	private var passCard : Int
+	private var penalty : Int
 
 	init {
 		this.id = id
 		malList = Array<Mal>(4, {i -> Mal(i)})
 		this.score = IntArray(4){ 0 }
+		this.passCard = 0
+		this.penalty = 0
 
 	}
 
@@ -73,11 +77,31 @@ class PlayerTemp(id : String) {
 	}
 
 	fun addScore(score: Int, id: Int) {
-		// id당 1번씩만 점수를 추가할 수 있음 (중복 방지)
+		// 말 id당 1번씩만 점수를 추가할 수 있음 (중복 방지)
 		this.score[id] += score
 	}
 
 	fun getScore(): Int {
 		return score.sum()
+	}
+
+	fun addPassCard() {
+		this.passCard++
+	}
+
+	fun getPassCard(): Int {
+		return this.passCard
+	}
+
+	fun addPenalty() {
+		this.penalty++
+	}
+
+	fun getPenalty(): Int {
+		return this.penalty
+	}
+
+	fun usePassCard() {
+		this.passCard--
 	}
 }

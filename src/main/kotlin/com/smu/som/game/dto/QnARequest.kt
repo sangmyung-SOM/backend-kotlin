@@ -23,11 +23,15 @@ class QnARequest {
 		@JsonProperty("room_id")
 		var roomId : String
 
-		constructor(questionId : Long, question : String, playerId : String, roomId : String){
+		@JsonProperty("penalty")
+		var penalty : Int
+
+		constructor(questionId : Long, question : String, playerId : String, roomId : String, penalty : Int){
 			this.questionId = questionId
 			this.question = question
 			this.playerId = playerId
 			this.roomId = roomId
+			this.penalty = penalty
 		}
 	}
 
@@ -45,13 +49,18 @@ class QnARequest {
 		@JsonProperty("room_id")
 		var roomId : String
 
-		@JsonProperty("turn_change")
-		lateinit var turnChange : String
-
 		constructor(answer : String, playerId : String, roomId : String){
 			this.answer = answer
 			this.playerId = playerId
 			this.roomId = roomId
 		}
 	}
+
+	data class GetQuestionWishDTO(
+		@JsonProperty("answer")
+		var question : String,
+
+		@JsonProperty("player_id")
+		var playerId : String,
+	)
 }

@@ -154,16 +154,39 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	fun question(request: QnARequest.GetQuestionDTO){
 
 		println("QUESTION : " + request.question + " " + request.playerId)
+		val gameRoom : GameRoom = findGameRoom(request.roomId)
+		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
+		request.penalty = player?.getPenalty()!!
 
 		sendingOperations.convertAndSend("/topic/game/question/"+request.roomId, request)
 	}
 
+	// 질문 변경을 선택한 경우 패널티 적립 (말 놓기 X)
+	@MessageMapping("/game/question/pass")
+	fun questionPass(request: QnARequest.GetQuestionDTO){
+		val gameRoom : GameRoom = findGameRoom(request.roomId)
+		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
+		player?.addPenalty()
+
+		request.penalty = player?.getPenalty()!!
+		sendingOperations.convertAndSend("/topic/game/question/"+request.roomId, request)
+
+		// 패널티로 말 놓기 불가능 -- 말 놓기 버튼 비활성화 : 구현하기
+
+	}
+
+	// 상대방에게 내가 원하는 질문
+	@MessageMapping("/game/question/wish")
+	fun questionWish(request: QnARequest.GetAnswerDTO){
+		val response = QnARequest.GetQuestionWishDTO(
+			playerId = request.playerId,
+			question = request.answer
+		)
+		sendingOperations.convertAndSend("/topic/game/question/wish"+request.roomId, response)
+	}
+
 	@MessageMapping("/game/answer")
 	fun answer(request: QnARequest.GetAnswerDTO){
-
-		request.turnChange = GameStateType.TURN_CHANGE.toString() // 답변 받고 턴 넘기기
-
-		println("ANSWER : " + request.answer + " " + request.playerId)
 
 		sendingOperations.convertAndSend("/topic/game/answer/" + request.roomId, request)
 	}
@@ -222,7 +245,17 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
 		}
-		// 윷 합이 0인 경우 -> 턴 넘기기 -- 아직 수정 중
+		// 턴 변경 아직 수정중 - 소영
+		else if (gameRoom.yuts.sum() > 0 && (num == 4 || num == 5)) {
+				val notTurnChange = GameMessage.GetTurnChange(
+					roomId = request.gameId,
+					playerId = request.playerId,
+					type = GameStateType.MY_TURN
+				)
+				println("턴 변경하지 않고 한 번 더 던질 수 있음")
+				sendingOperations.convertAndSend("/topic/game/turn/"+notTurnChange.roomId,notTurnChange)
+			}
+		// 윷 합이 0인 경우 : 윷이나 모가 안나옴 -> 턴 변경
 		else if (gameRoom.yuts.sum() == 0)
 		{
 			val turnChange = GameMessage.GetTurnChange(
@@ -266,10 +299,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		request.player1Score = gameRoom.player1.getScore()
 		request.player2Score = gameRoom.player2.getScore()
 
-		println("request.playerId = ${request.playerId}, " +
-			"request.1pScore = ${request.player1Score}, " +
-			"request.2pScore = ${request.player2Score}")
-
 		// 스코어가 4점이면 게임 종료
 		if (request.player1Score == 4) {
 			sendWinner("1P", "2P", request.gameId)
@@ -278,6 +307,42 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 
 		sendingOperations.convertAndSend("/topic/game/score/" + request.gameId, request)
+	}
+
+	// 소원권 패스 적립
+	@MessageMapping("/game/room/wish/pass")
+	fun passWish(request: GameMessage.GetPassWish) {
+		println("소원권 패스 적립 소켓 통신 테스트")
+		println("request.playerId = ${request.playerId}")
+		println("request.roomId = ${request.roomId}")
+
+		val gameId = request.roomId
+		val gameRoom : GameRoom = findGameRoom(gameId!!)
+		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
+
+		if (request.passCard == 0) {
+			println("소원권 사용")
+			player?.usePassCard()
+
+		} else if (request.passCard == 1) {
+			println("소원권 적립")
+			player?.addPassCard()
+
+		}
+		val response = GameMessage.GetPassWish(
+			roomId = gameId,
+			playerId = request.playerId,
+			passCard = player?.getPassCard(),
+		)
+
+		val url = StringBuilder("/topic/game/room/")
+			.append(gameId)
+			.append("/wish/pass")
+			.toString()
+
+		println("소원권 패스 ${response.passCard}개 남음 ${response.playerId}")
+		sendingOperations.convertAndSend(url, response)
+
 	}
 
 	// 게임 종료
