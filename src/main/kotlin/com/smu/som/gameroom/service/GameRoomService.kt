@@ -23,6 +23,7 @@ class GameRoomService (var gameRooms: HashMap<String, GameRoomSetting> = LinkedH
 
 	fun findAllRoom(): List<GameRoomSetting> {
 		var result = ArrayList(gameRooms.values)
+		result = result.filterNotNull() as ArrayList<GameRoomSetting>
 		result.reverse()
 
 		return result
