@@ -19,6 +19,10 @@ class GameMalService {
 
 		var malMoveInfoList: ArrayList<GameMalResponse.MalMoveInfo>  = ArrayList()
 		for(mal in player.getMalList()){
+			if(!mal.isValid()){
+				continue
+			}
+
 			if(mal.getPosition() == 0){ // 새로 추가할 수 있는 말
 				newMalId = mal.id
 				continue
@@ -50,11 +54,15 @@ class GameMalService {
 		val player = gameRoom.findPlayer(request.playerId)
 		val oppPlayer = gameRoom.findOppPlayer(request.playerId)
 
-		val movement = player.moveMal(request.malId, request.yutResult)
-		val caughtMalList = player.catchMal(request.malId, oppPlayer)
-		val updaMalId = player.updaMal(request.malId)
-
 		val mal : Mal = player.findMal(request.malId)
+		var caughtMalList : List<Int> = ArrayList<Int>()
+		var updaMalId : Int = -1
+
+		val movement = player.moveMal(request.malId, request.yutResult)
+		if(!mal.isEnd()){
+			caughtMalList = player.catchMal(request.malId, oppPlayer)
+			updaMalId = player.updaMal(request.malId)
+		}
 
 		return GameMalResponse.MoveMalDTO(
 			userId = request.userId,
