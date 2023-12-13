@@ -21,10 +21,9 @@ class Mal (val id : Int) {
 		checkValid()
 
 		val nextPosition = findNextPosition(yutResult)
-		val nextPositionValue = nextPosition.last()
 
 		// 말이 도착했을 경우
-		if(nextPositionValue == 0 && this.position != 0){
+		if(nextPosition.last() == 0 && this.position != 0){
 			println("말이 도착했습니다. $id")
 			finish()
 
@@ -42,7 +41,7 @@ class Mal (val id : Int) {
 	// 말 움직이는 위치 찾기
 	public fun findNextPosition(yutResult: YutResult) : List<Int>{
 
-//		checkValid()
+		checkValid()
 
 		val movements = ArrayList<Int>()
 
@@ -81,8 +80,6 @@ class Mal (val id : Int) {
 
 		for(i in 0 until yutResult.move-1){
 			when(nextPosition){
-<<<<<<< Updated upstream
-=======
 				23->{ // 중앙에 있는 교차점을 왼쪽위->오른쪽아래 대각선으로 횡단하는 경우
 					if(movements.get(movements.size-2) == 27){
 						movements.add(29)
@@ -93,7 +90,6 @@ class Mal (val id : Int) {
 						nextPosition++
 					}
 				}
->>>>>>> Stashed changes
 				// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
 				25->{movements.add(15); nextPosition =15}
 				27->{movements.add(23); nextPosition =23}
@@ -187,6 +183,7 @@ class Mal (val id : Int) {
 	}
 
 	private fun finish(){
+		this.position = 0
 		this.isEnd = true
 	}
 

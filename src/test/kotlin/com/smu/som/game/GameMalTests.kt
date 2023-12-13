@@ -1,5 +1,6 @@
 package com.smu.som.game
 
+import com.smu.som.game.GameMalService
 import com.smu.som.game.entity.Mal
 import com.smu.som.game.entity.PlayerTemp
 import com.smu.som.game.entity.YutResult
