@@ -1,11 +1,10 @@
-package com.smu.som.gameMal
+package com.smu.som.game
 
 import com.smu.som.game.entity.Mal
 import com.smu.som.game.entity.PlayerTemp
 import com.smu.som.game.entity.YutResult
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.lang.RuntimeException
 
 class GameMalTests {
@@ -32,6 +31,24 @@ class GameMalTests {
 
 		mal.move(YutResult.DO)
 		println("도: mal.getPosition() = ${mal.getPosition()}") // 20
+
+		mal.move(YutResult.MO)
+		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+	}
+
+	@Test
+	public fun 말움직이기_테스트2(){
+		// 윷 -> 모 -> 도 -> 모
+		val mal : Mal = Mal(0)
+
+		mal.move(YutResult.YUT)
+		println("윷: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+
+		mal.move(YutResult.MO)
+		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+
+		mal.move(YutResult.DO)
+		println("도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
 
 		mal.move(YutResult.MO)
 		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0

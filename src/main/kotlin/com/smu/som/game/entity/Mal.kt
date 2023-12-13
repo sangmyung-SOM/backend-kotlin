@@ -81,6 +81,19 @@ class Mal (val id : Int) {
 
 		for(i in 0 until yutResult.move-1){
 			when(nextPosition){
+<<<<<<< Updated upstream
+=======
+				23->{ // 중앙에 있는 교차점을 왼쪽위->오른쪽아래 대각선으로 횡단하는 경우
+					if(movements.get(movements.size-2) == 27){
+						movements.add(29)
+						nextPosition = 29
+					}
+					else{
+						movements.add(nextPosition+1)
+						nextPosition++
+					}
+				}
+>>>>>>> Stashed changes
 				// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
 				25->{movements.add(15); nextPosition =15}
 				27->{movements.add(23); nextPosition =23}
