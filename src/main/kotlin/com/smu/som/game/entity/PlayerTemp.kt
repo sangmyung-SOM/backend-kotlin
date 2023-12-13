@@ -64,6 +64,9 @@ class PlayerTemp(id : String) {
 		var map = HashMap<Int, Int>() // 말id, nextPosition
 
 		for(mal in malList){
+			if(!mal.isValid()){
+				continue
+			}
 			map.put(mal.id, mal.findNextPosition(yutResult).last())
 		}
 
