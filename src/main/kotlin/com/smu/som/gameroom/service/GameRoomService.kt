@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Service
-import kotlin.collections.ArrayList
+import kotlin.math.min
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 
@@ -27,6 +27,19 @@ class GameRoomService (var gameRooms: HashMap<String, GameRoomSetting> = LinkedH
 		result.reverse()
 
 		return result
+	}
+
+	fun findRoom(pageNumber: Int, pageSize: Int): List<GameRoomSetting> {
+		val result = findAllRoom()
+
+		val startIndex = (pageNumber - 1) * pageSize
+		val endIndex = min(startIndex + pageSize, result.size)
+
+		return if (startIndex <= endIndex) {
+			result.subList(startIndex, endIndex)
+		} else {
+			emptyList()
+		}
 	}
 
 	fun findById(roomId: String): GameRoomSetting? {

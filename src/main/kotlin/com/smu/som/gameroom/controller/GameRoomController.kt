@@ -5,6 +5,7 @@ import com.smu.som.gameroom.service.GameRoomService
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
+import java.awt.print.Pageable
 
 @Controller
 @RequiredArgsConstructor
@@ -26,6 +27,14 @@ class GameRoomController {
 	@ResponseBody
 	fun room(): List<GameRoomSetting> {
 		return gameRoomService.findAllRoom()
+	}
+
+	@GetMapping("/room")
+	@ResponseBody
+	fun rooms(@RequestParam(defaultValue = "1") pageNumber: Int,
+			 @RequestParam(defaultValue = "7") pageSize: Int
+	): List<GameRoomSetting> {
+		return gameRoomService.findRoom(pageNumber, pageSize)
 	}
 
 	@DeleteMapping("/room/{roomId}")
