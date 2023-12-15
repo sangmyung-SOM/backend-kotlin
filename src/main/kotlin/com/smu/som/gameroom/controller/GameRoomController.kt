@@ -42,4 +42,10 @@ class GameRoomController {
 	fun deleteRoom(@PathVariable roomId: String) {
 		gameRoomService.deleteById(roomId)
 	}
+
+	@PatchMapping("/room/{roomId}/update")
+	@ResponseBody
+	fun updateRoomState(@PathVariable roomId: String, @RequestParam state : Boolean) : Boolean {
+		return gameRoomService.updateState(roomId, state)
+	}
 }

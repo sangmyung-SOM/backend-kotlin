@@ -6,7 +6,8 @@ class GameRoomSetting(
 	var roomId:String?,
 	var roomName:String?,
 	var category:String?,
-	var adult:String?
+	var adult:String?,
+	var playing:Boolean = false
 ) {
 	companion object {
 		fun of(roomName: String, category: String, adult: String):GameRoomSetting{

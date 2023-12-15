@@ -23,7 +23,8 @@ class GameRoomService (var gameRooms: HashMap<String, GameRoomSetting> = LinkedH
 
 	fun findAllRoom(): List<GameRoomSetting> {
 		var result = ArrayList(gameRooms.values)
-		result = result.filterNotNull() as ArrayList<GameRoomSetting>
+		result = result.filter { !it.playing } as ArrayList<GameRoomSetting>
+		result.filterNotNull() as ArrayList<GameRoomSetting>
 		result.reverse()
 
 		return result
@@ -50,6 +51,13 @@ class GameRoomService (var gameRooms: HashMap<String, GameRoomSetting> = LinkedH
 		if (findById(roomId) != null) {
 			gameRooms.remove(roomId)
 		}
+	}
+	fun updateState(roomId: String, b: Boolean) : Boolean {
+		if (findById(roomId) != null) {
+			gameRooms.get(roomId)?.playing = b
+			return true
+		}
+		return false
 	}
 
 }
