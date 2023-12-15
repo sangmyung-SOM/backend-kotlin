@@ -56,6 +56,27 @@ class GameMalTests {
 	}
 
 	@Test
+	public fun 말움직이기_테스트3(){
+		// 윷 -> 모 -> 도 -> 모
+		val mal : Mal = Mal(0)
+
+		mal.move(YutResult.YUT)
+		println("윷: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+
+		mal.move(YutResult.MO)
+		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+
+		mal.move(YutResult.DO)
+		println("도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+
+		mal.move(YutResult.GAE)
+		println("개: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+
+		mal.move(YutResult.GAE)
+		println("개: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+	}
+
+	@Test
 	public fun 말움직이기_빽도_테스트(){
 		// 빽도
 		val mal : Mal = Mal(0)

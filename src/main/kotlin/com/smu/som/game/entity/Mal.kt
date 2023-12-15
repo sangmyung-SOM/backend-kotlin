@@ -81,7 +81,7 @@ class Mal (val id : Int) {
 		for(i in 0 until yutResult.move-1){
 			when(nextPosition){
 				23->{ // 중앙에 있는 교차점을 왼쪽위->오른쪽아래 대각선으로 횡단하는 경우
-					if(movements.get(movements.size-2) == 27){
+					if(movements.contains(27) || position == 27){
 						movements.add(29)
 						nextPosition = 29
 					}
