@@ -2,6 +2,8 @@ package com.smu.som.game
 
 import com.smu.som.game.dto.*
 import com.smu.som.game.entity.PlayerTemp
+import com.smu.som.gameroom.GameRoomSetting
+import com.smu.som.gameroom.service.GameRoomService
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -227,12 +229,8 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
 
 		val num = request.yutResult.ordinal
-		println("말 이동")
-		for (i in 0..5) {
-			println("$i : " + player.yuts[i])
-		}
+
 		player.yuts[num] -= 1
-		println("player.yuts[$num] = ${player.yuts[num]} ${request.playerId}")
 
 		// 말 잡은 경우
 		if(response.isCatchMal) {
@@ -251,14 +249,14 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
 			player.yuts = IntArray(6) { 0 }
 		}
-		// 윷이나 모가 나왔는데 윷을 한 번 더 던지기 전에 말을 이동시키지 않은 경우 -> 턴 변경
+		// 말 이동 하고도 결과가 남아있는 경우 -> 턴 변경하지 않음
+		else if (player.yuts.sum() >= 1) { // 이동할 말들이 아직 남아있는 경우
+			turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
+		}
+		// 윷이나 모가 아니면서 결과가 남아있는 경우 말 이동만 하고 끝이기 때문에 턴 변경
 		else if (player.yuts.sum() == 1 && (num != 4 && num != 5)) {
 			turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
 			// 윷이나 모 결과가 아직 남아있기 때문에 초기화 하지 않음
-		}
-		// 말 이동 하고도 결과가 남아있는 경우 -> 턴 변경하지 않음
-		else if (player.yuts.sum() >= 1) {
-			turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
 		}
 		// 윷이나 모가 안나오고 도 개 걸 빽도 중 한가지가 나온 경우 -> 턴 변경
 		else if (player.yuts.sum() == 0)
