@@ -20,10 +20,10 @@ class Mal (val id : Int) {
 	public fun move(yutResult: YutResult) : List<Int>{
 		checkValid()
 
-		val nextPosition = findNextPosition(yutResult)
+		val movement = findNextPosition(yutResult)
 
 		// 말이 도착했을 경우
-		if(nextPosition.last() == 0 && this.position != 0){
+		if(movement.last() == 0 && this.position != 0){
 			println("말이 도착했습니다. $id")
 			finish()
 
@@ -33,14 +33,13 @@ class Mal (val id : Int) {
 			}
 		}
 
-		this.position = nextPosition.last()
+		this.position = movement.last()
 
-		return nextPosition
+		return movement
 	}
 
 	// 말 움직이는 위치 찾기
 	public fun findNextPosition(yutResult: YutResult) : List<Int>{
-
 		checkValid()
 
 		val movements = ArrayList<Int>()
@@ -53,8 +52,6 @@ class Mal (val id : Int) {
 				21 -> {movements.add(5)}
 				23->{movements.add(27)}
 				29->{movements.add(23)}
-				// 끝
-				20->{movements.add(0)}
 				// 나머지
 				else -> {movements.add(position-1)}
 			}
@@ -63,31 +60,23 @@ class Mal (val id : Int) {
 
 		// 도~모 일경우
 		var nextPosition : Int = position
-		when(nextPosition){ // 교차점에서 시작할 경우를 위해서
-			// 교차점일 경우
-			5->{movements.add(21); nextPosition = 21}
-			10->{movements.add(26); nextPosition = 26}
-			23->{movements.add(29); nextPosition = 29}
-			// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
-			25->{movements.add(15); nextPosition = 15}
-			27->{movements.add(23); nextPosition = 23}
-			30->{movements.add(20); nextPosition = 20}
-			// 끝
-			20->{ movements.add(0); return movements }
-			// 나머지
-			else->{ movements.add(nextPosition+1); nextPosition++}
-		}
-
-		for(i in 0 until yutResult.move-1){
+		for(i in 0 until yutResult.move){
+			if(i == 0){ // 교차점에서 시작할 경우를 위해서
+				when(nextPosition){
+					// 교차점일 경우
+					5->{movements.add(21); nextPosition = 21; continue}
+					10->{movements.add(26); nextPosition = 26; continue}
+					23->{movements.add(29); nextPosition = 29; continue}
+				}
+			}
 			when(nextPosition){
-				23->{ // 중앙에 있는 교차점을 왼쪽위->오른쪽아래 대각선으로 횡단하는 경우
-					if(movements.contains(27) || position == 27){
+				23->{
+					if(movements.contains(27) || position == 27){ // 중앙에 있는 교차점을 왼쪽위->오른쪽아래 대각선으로 횡단하는 경우
 						movements.add(29)
 						nextPosition = 29
 					}
 					else{
-						movements.add(nextPosition+1)
-						nextPosition++
+						movements.add(++nextPosition)
 					}
 				}
 				// 교차점이 아닌 경우중 위치의 index가 확 바뀌는 부분
@@ -97,7 +86,7 @@ class Mal (val id : Int) {
 				// 끝
 				20->{ movements.add(0); return movements }
 				// 나머지
-				else->{movements.add(nextPosition+1); nextPosition++}
+				else->{movements.add(++nextPosition)}
 			}
 		}
 
@@ -108,32 +97,34 @@ class Mal (val id : Int) {
 	public fun catch(oppMalList : Array<Mal>): List<Int>{
 		checkValid()
 
-		val tempUpdaMalList = ArrayList<Int>()
+		val catchMalList = ArrayList<Int>()
 
 		if(this.position == 0){ // 아직 윷판 위에 못올라간 말임
-			return tempUpdaMalList
+			return catchMalList
 		}
 
 		for(oppMal in oppMalList){
 			if(oppMal.position == this.position && oppMal.isValid()) { // 잡음
-				oppMal.position = 0
-				oppMal.isUped = false
-				tempUpdaMalList.add(oppMal.id)
-
 				for(oppUpdaMal in oppMal.updaMalList){ // 잡은 말의 업은 말들에 대해 처리
-					oppUpdaMal.position = 0
-					oppUpdaMal.isUped = false
-					oppUpdaMal.updaMalList.clear()
-					tempUpdaMalList.add(oppUpdaMal.id)
+					oppUpdaMal.caught()
+					catchMalList.add(oppUpdaMal.id)
 				}
 
-				oppMal.updaMalList.clear()
+				oppMal.caught()
+				catchMalList.add(oppMal.id)
 
-				return tempUpdaMalList
+				return catchMalList
 			}
 		}
 
-		return tempUpdaMalList
+		return catchMalList
+	}
+
+	// 말이 잡힘
+	private fun caught(){
+		this.position = 0
+		this.isUped = false
+		this.updaMalList.clear()
 	}
 
 	// 말 업기

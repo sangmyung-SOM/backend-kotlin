@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service
 class GameMalService {
 
 	// 말 이동할 수 있는 위치 조회
-	public fun getAllMalMovement(gameRoom: GameRoom, request: GameMalRequest.GetMalMovePositionDTO) : GameMalResponse.GetMalMovePosition{
+	public fun getNextPositionOfAllMal(gameRoom: GameRoom, request: GameMalRequest.GetMalMovePositionDTO) : GameMalResponse.GetMalMovePosition{
 		val player : PlayerTemp = gameRoom.findPlayer(request.playerId)
 		var newMalId : Int = -1 // 새로 추가할 수 있는 말
 
 		// 말 움직일 수 있는 위치 찾기
-		val nextPositionMap = player.findAllMalMovePosition(request.yutResult)
+		val nextPositionMap = player.findNextPositionOfAllMal(request.yutResult)
 
 		var malMoveInfoList: ArrayList<GameMalResponse.MalMoveInfo>  = ArrayList()
 		for(mal in player.getMalList()){
-			if(!mal.isValid()){
+			if(!mal.isValid()){ // 업혀있거나 도착해서 사용할 수 없는 말
 				continue
 			}
 
@@ -35,7 +35,7 @@ class GameMalService {
 					isEnd = mal.isEnd(),
 					point = mal.getPoint(),
 					position = mal.getPosition(),
-					nextPosition = nextPositionMap.get(mal.id)!!
+					nextPosition = nextPositionMap[mal.id]!!
 				)
 			)
 		}
@@ -55,13 +55,13 @@ class GameMalService {
 		val oppPlayer = gameRoom.findOppPlayer(request.playerId)
 
 		val mal : Mal = player.findMal(request.malId)
-		var caughtMalList : List<Int> = ArrayList<Int>()
+		var caughtMalList : List<Int> = ArrayList()
 		var updaMalId : Int = -1
 
-		val movement = player.moveMal(request.malId, request.yutResult)
+		val movement = player.moveMal(mal, request.yutResult)
 		if(!mal.isEnd()){
-			caughtMalList = player.catchMal(request.malId, oppPlayer)
-			updaMalId = player.updaMal(request.malId)
+			caughtMalList = player.catchMal(mal, oppPlayer)
+			updaMalId = player.updaMal(mal)
 		}
 
 		return GameMalResponse.MoveMalDTO(
@@ -72,9 +72,9 @@ class GameMalService {
 			movement = movement,
 			nextPosition = mal.getPosition(),
 			isEnd = mal.isEnd(),
-			isCatchMal = if(caughtMalList.size == 0) false else true,
+			isCatchMal = caughtMalList.isNotEmpty(),
 			catchMalList = caughtMalList,
-			isUpdaMal = if(updaMalId == -1) false else true,
+			isUpdaMal = (updaMalId != -1),
 			updaMalId = updaMalId
 		)
 	}

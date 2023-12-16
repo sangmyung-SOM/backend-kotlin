@@ -17,63 +17,80 @@ class GameMalTests {
 
 		mal.move(YutResult.DO)
 		println("도: mal.getPosition() = ${mal.getPosition()}") // 1
+		Assertions.assertEquals(1, mal.getPosition())
 
 		mal.move(YutResult.YUT)
 		println("윷: mal.getPosition() = ${mal.getPosition()}") // 5
+		Assertions.assertEquals(5, mal.getPosition())
 
 		mal.move(YutResult.GIRL)
 		println("걸: mal.getPosition() = ${mal.getPosition()}") // 23
+		Assertions.assertEquals(23, mal.getPosition())
 
 		mal.move(YutResult.GAE)
 		println("개: mal.getPosition() = ${mal.getPosition()}") // 30
+		Assertions.assertEquals(30, mal.getPosition())
 
 		mal.move(YutResult.BACK_DO)
 		println("빽도: mal.getPosition() = ${mal.getPosition()}") // 29
+		Assertions.assertEquals(29, mal.getPosition())
 
 		mal.move(YutResult.DO)
-		println("도: mal.getPosition() = ${mal.getPosition()}") // 20
+		println("도: mal.getPosition() = ${mal.getPosition()}") // 30
+		Assertions.assertEquals(30, mal.getPosition())
 
 		mal.move(YutResult.MO)
 		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		Assertions.assertEquals(0, mal.getPosition())
+		Assertions.assertEquals(true, mal.isEnd())
 	}
 
 	@Test
-	public fun 말움직이기_테스트2(){
+	public fun 말움직이기_테스트_중앙에있는_교차점을_왼쪽위_오른쪽아래_대각선으로_횡단하는_경우(){
 		// 윷 -> 모 -> 도 -> 모
 		val mal : Mal = Mal(0)
 
 		mal.move(YutResult.YUT)
-		println("윷: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("윷: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 4
+		Assertions.assertEquals(4, mal.getPosition())
 
 		mal.move(YutResult.MO)
-		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 9
+		Assertions.assertEquals(9, mal.getPosition())
 
 		mal.move(YutResult.DO)
-		println("도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 10
+		Assertions.assertEquals(10, mal.getPosition())
 
 		mal.move(YutResult.MO)
-		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 30
+		Assertions.assertEquals(30, mal.getPosition())
 	}
 
 	@Test
-	public fun 말움직이기_테스트3(){
-		// 윷 -> 모 -> 도 -> 모
+	public fun 말움직이기_테스트_중앙에있는_교차점을_왼쪽위_오른쪽아래_대각선으로_횡단하는_경우2(){
+		// 윷 -> 모 -> 도 -> 개 -> 개
 		val mal : Mal = Mal(0)
 
 		mal.move(YutResult.YUT)
-		println("윷: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("윷: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 4
+		Assertions.assertEquals(4, mal.getPosition())
 
 		mal.move(YutResult.MO)
-		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("모: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 9
+		Assertions.assertEquals(9, mal.getPosition())
 
 		mal.move(YutResult.DO)
-		println("도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 10
+		Assertions.assertEquals(10, mal.getPosition())
 
 		mal.move(YutResult.GAE)
-		println("개: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("개: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 27
+		Assertions.assertEquals(27, mal.getPosition())
 
 		mal.move(YutResult.GAE)
-		println("개: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		println("개: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 29
+		Assertions.assertEquals(29, mal.getPosition())
 	}
 
 	@Test
@@ -83,6 +100,8 @@ class GameMalTests {
 
 		mal.move(YutResult.BACK_DO)
 		println("빽도: mal.getPosition() = ${mal.getPosition()}, 도착 = ${mal.isEnd()}") // 0
+		Assertions.assertEquals(0, mal.getPosition())
+		Assertions.assertEquals(false, mal.isEnd())
 	}
 
 	@Test
@@ -97,13 +116,16 @@ class GameMalTests {
 		// 플레이어 A 말 [걸] 이동
 		playerA.moveMal(0, YutResult.GIRL)
 		println("A: mal0 position=${mal0A.getPosition()}")
+		Assertions.assertEquals(3, mal0A.getPosition())
 
 		println("말 잡은 후")
 		// 플레이어 B 말 [걸] 이동해 A의 말 잡기
 		playerB.moveMal(0, YutResult.GIRL)
 		playerB.catchMal(0, playerA)
 		println("B: mal0 position=${mal0B.getPosition()}")
+		Assertions.assertEquals(3, mal0B.getPosition())
 		println("A: mal0 position=${mal0A.getPosition()}")
+		Assertions.assertEquals(0, mal0A.getPosition())
 	}
 
 	@Test
@@ -117,13 +139,18 @@ class GameMalTests {
 		// 플레이어 A 말0 [윷] 이동
 		playerA.moveMal(0, YutResult.YUT)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
+		Assertions.assertEquals(4, mal0A.getPosition())
 
 		println("말 업은 후")
 		// 플레이어 A 말1 [윷] 이동해 말0 업기
 		playerA.moveMal(1, YutResult.YUT)
 		playerA.updaMal(1)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
+		Assertions.assertEquals(false, mal0A.isValid())
 		println("mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
+		Assertions.assertEquals(2, mal1A.getPoint())
+		Assertions.assertEquals(4, mal1A.getPosition())
+		Assertions.assertEquals(true, mal1A.isValid())
 	}
 
 	@Test
@@ -151,6 +178,11 @@ class GameMalTests {
 		println("A mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
 		println("B mal 0: postion=${mal0B.getPosition()}, point=${mal0B.getPoint()}, valid=${mal0B.isValid()}")
 
+		Assertions.assertEquals(0, mal0A.getPosition())
+		Assertions.assertEquals(0, mal1A.getPosition())
+		Assertions.assertEquals(true, mal0A.isValid())
+		Assertions.assertEquals(true, mal1A.isValid())
+		Assertions.assertEquals(5, mal0B.getPosition())
 	}
 
 	@Test
@@ -180,6 +212,14 @@ class GameMalTests {
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 		println("mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
 		println("mal 2: postion=${mal2A.getPosition()}, point=${mal2A.getPoint()}, valid=${mal2A.isValid()}")
+
+		Assertions.assertEquals(2, mal0A.getPosition())
+		Assertions.assertEquals(2, mal1A.getPosition())
+		Assertions.assertEquals(2, mal2A.getPosition())
+		Assertions.assertEquals(false, mal0A.isValid())
+		Assertions.assertEquals(false, mal1A.isValid())
+		Assertions.assertEquals(true, mal2A.isValid())
+		Assertions.assertEquals(3, mal2A.getPoint())
 	}
 
 	@Test
