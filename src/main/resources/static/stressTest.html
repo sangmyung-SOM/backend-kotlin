@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>STOMP 스트레스 테스트</title>
+<!--    <script src="/webjars/sockjs-client/sockjs.min.js"></script>-->
+<!--    <script src="/webjars/stomp-websocket/stomp.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+
+<!--    https://jinn-blog.tistory.com/152 해당 사이트 참고!!!-->
+
+</head>
+<body>
+
+<div>
+    <button id="btnConnectStomp" type="submit" class="primary">STOMP 연결</button>
+</div>
+
+<div id="stomp-test-page" class="hidden">
+    <div class="stomp-container">
+        <div class="stomp-header">
+            <h1>SOM stomp Demo</h1>
+        </div>
+        <div class="connecting">
+            connecting...
+        </div>
+        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
+        <button id="submitBtn" class="primary">send</button>
+    </div>
+</div>
+
+<script src="/js/stomp.js"></script>
+</body>
+</html>
