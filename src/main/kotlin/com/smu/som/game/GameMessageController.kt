@@ -2,8 +2,6 @@ package com.smu.som.game
 
 import com.smu.som.game.dto.*
 import com.smu.som.game.entity.PlayerTemp
-import com.smu.som.gameroom.GameRoomSetting
-import com.smu.som.gameroom.service.GameRoomService
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -188,12 +186,11 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 	// 말 이동할 수 있는 위치 조회 요청
 	@MessageMapping("/game/mal")
-	fun getMalMovePosition(request : GameMalRequest.GetMalMovePositionDTO){
+	fun getNextPositionOfAllMal(request : GameMalRequest.GetMalMovePositionDTO){
 		println("말 이동할 수 있는 위치 조회 소켓 통신 테스트")
 		println("request.playerId = ${request.playerId}")
 		println("request.gameId = ${request.gameId}")
 		println("request.yutResult = ${request.yutResult}")
-
 
 		var gameRoom : GameRoom = findGameRoom(request.gameId)
 
@@ -205,7 +202,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 
 		// 나머진 다 service 클래스에서
-		val response: GameMalResponse.GetMalMovePosition = gameMalService.getAllMalMovement(gameRoom, request)
+		val response: GameMalResponse.GetMalMovePosition = gameMalService.getNextPositionOfAllMal(gameRoom, request)
 
 		val url = StringBuilder("/topic/game/")
 			.append(request.gameId)
