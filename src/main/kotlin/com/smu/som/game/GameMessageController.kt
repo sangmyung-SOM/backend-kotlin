@@ -248,10 +248,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 		// 말 이동 하고도 결과가 남아있는 경우 -> 턴 변경하지 않음
 		else if (player.yuts.sum() >= 1) { // 이동할 말들이 아직 남아있는 경우
-			if (num != 4 && num != 5) { // 윷이나 모가 아닌 경우
+			if (player.yuts.sum() == 1 && (num != 4 && num != 5)) { // 윷이나 모가 아닌 경우
 				turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
 			}
-			turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
+			else turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
 		}
 		// 윷이나 모가 아니면서 결과가 남아있는 경우 말 이동만 하고 끝이기 때문에 턴 변경
 		else if (player.yuts.sum() == 1 && (num != 4 && num != 5)) {
