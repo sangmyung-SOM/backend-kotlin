@@ -111,12 +111,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			}
 			sendingOperations.convertAndSend("/topic/game/room/" + gameMessage.roomId, gameMessage)
 		}
-
-		// 1P 2P 모두 입장 후 게임 시작
-		if (GameStateType.START == gameMessage.type) {
-			println("START STATE : " + gameMessage.playerId + " " + gameMessage.sender + " " + gameMessage.roomId)
-
-		}
 	}
 
 	@MessageMapping("/game/throw")
@@ -140,7 +134,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	@MessageMapping("/game/question")
 	fun question(request: QnARequest.GetQuestionDTO){
 
-		println("QUESTION : " + request.question + " " + request.playerId)
 		val gameRoom : GameRoom = findGameRoom(request.roomId)
 		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
 		request.penalty = player?.getPenalty()!!
@@ -175,7 +168,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 	@MessageMapping("/game/answer")
 	fun answer(request: QnARequest.GetAnswerDTO){
-
 		sendingOperations.convertAndSend("/topic/game/answer/" + request.roomId, request)
 	}
 
