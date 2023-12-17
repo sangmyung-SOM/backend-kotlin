@@ -74,7 +74,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 				}
 
 				if (name2p != null) {
-					println("2P가 들어와있습니다.")
 					gameMessage.type = GameStateType.START
 					gameMessage.userNameList = "${gameMessage.sender},$name2p"
 					gameMessage.profileURL_2P = profileURL_2P
