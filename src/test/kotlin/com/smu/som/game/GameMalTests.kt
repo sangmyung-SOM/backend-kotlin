@@ -114,14 +114,14 @@ class GameMalTests {
 
 		println("말 잡기 전")
 		// 플레이어 A 말 [걸] 이동
-		playerA.moveMal(0, YutResult.GIRL)
+		playerA.moveMal(mal0A, YutResult.GIRL)
 		println("A: mal0 position=${mal0A.getPosition()}")
 		Assertions.assertEquals(3, mal0A.getPosition())
 
 		println("말 잡은 후")
 		// 플레이어 B 말 [걸] 이동해 A의 말 잡기
-		playerB.moveMal(0, YutResult.GIRL)
-		playerB.catchMal(0, playerA)
+		playerB.moveMal(mal0B, YutResult.GIRL)
+		playerB.catchMal(mal0B, playerA)
 		println("B: mal0 position=${mal0B.getPosition()}")
 		Assertions.assertEquals(3, mal0B.getPosition())
 		println("A: mal0 position=${mal0A.getPosition()}")
@@ -137,14 +137,14 @@ class GameMalTests {
 
 		println("말 업기 전")
 		// 플레이어 A 말0 [윷] 이동
-		playerA.moveMal(0, YutResult.YUT)
+		playerA.moveMal(mal0A, YutResult.YUT)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 		Assertions.assertEquals(4, mal0A.getPosition())
 
 		println("말 업은 후")
 		// 플레이어 A 말1 [윷] 이동해 말0 업기
-		playerA.moveMal(1, YutResult.YUT)
-		playerA.updaMal(1)
+		playerA.moveMal(mal1A, YutResult.YUT)
+		playerA.updaMal(mal1A)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 		Assertions.assertEquals(false, mal0A.isValid())
 		println("mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
@@ -164,16 +164,16 @@ class GameMalTests {
 
 		println("말 잡기 전")
 		// 플레이어 A말0 [모] 이동후 A말1 [모] 이동해 업기
-		playerA.moveMal(0, YutResult.MO)
-		playerA.moveMal(1, YutResult.MO)
-		playerA.updaMal(1)
+		playerA.moveMal(mal0A, YutResult.MO)
+		playerA.moveMal(mal1A, YutResult.MO)
+		playerA.updaMal(mal1A)
 		println("A mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 		println("A mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
 
 		println("말 잡은 후")
 		// 플레이어 B말0 [모] 이동해 A말0,1 잡기
-		playerB.moveMal(0, YutResult.MO)
-		playerB.catchMal(0, playerA)
+		playerB.moveMal(mal0B, YutResult.MO)
+		playerB.catchMal(mal0B, playerA)
 		println("A mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 		println("A mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
 		println("B mal 0: postion=${mal0B.getPosition()}, point=${mal0B.getPoint()}, valid=${mal0B.isValid()}")
@@ -195,20 +195,20 @@ class GameMalTests {
 
 		println("말 업기 전")
 		// 플레이어 A 말0 [개] 이동
-		playerA.moveMal(0, YutResult.GAE)
+		playerA.moveMal(mal0A, YutResult.GAE)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 
 		println("말 한번 업은 후")
 		// 플레이어 A 말1 [개] 이동해 말0 업기
-		playerA.moveMal(1, YutResult.GAE)
-		playerA.updaMal(1)
+		playerA.moveMal(mal1A, YutResult.GAE)
+		playerA.updaMal(mal1A)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 		println("mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
 
 		println("말 한번 더 업은 후")
 		// 플레이어 A 말2 [개] 이동해 말0,1 업기
-		playerA.moveMal(2, YutResult.GAE)
-		playerA.updaMal(2)
+		playerA.moveMal(mal2A, YutResult.GAE)
+		playerA.updaMal(mal2A)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 		println("mal 1: postion=${mal1A.getPosition()}, point=${mal1A.getPoint()}, valid=${mal1A.isValid()}")
 		println("mal 2: postion=${mal2A.getPosition()}, point=${mal2A.getPoint()}, valid=${mal2A.isValid()}")
@@ -229,13 +229,13 @@ class GameMalTests {
 		val mal0A = playerA.findMal(0)
 		val mal1A = playerA.findMal(1)
 
-		playerA.moveMal(0, YutResult.YUT)
-		playerA.moveMal(1, YutResult.YUT)
-		playerA.updaMal(1)
+		playerA.moveMal(mal0A, YutResult.YUT)
+		playerA.moveMal(mal1A, YutResult.YUT)
+		playerA.updaMal(mal1A)
 
 		// 업힌 말에 대해 실행 테스트
 		Assertions.assertThrows(RuntimeException::class.java, {
-			playerA.moveMal(0, YutResult.BACK_DO)
+			playerA.moveMal(mal0A, YutResult.BACK_DO)
 		})
 	}
 
@@ -245,16 +245,16 @@ class GameMalTests {
 
 		val mal0A = playerA.findMal(0)
 
-		playerA.moveMal(0, YutResult.MO)
+		playerA.moveMal(mal0A, YutResult.MO)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
-		playerA.moveMal(0, YutResult.GIRL)
+		playerA.moveMal(mal0A, YutResult.GIRL)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
-		playerA.moveMal(0, YutResult.YUT) // 도착
+		playerA.moveMal(mal0A, YutResult.YUT) // 도착
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}, isEnd=${mal0A.isEnd()}")
 
 		// 도착한 말에 대해 실행 테스트
 		Assertions.assertThrows(RuntimeException::class.java, {
-			playerA.moveMal(0, YutResult.BACK_DO)
+			playerA.moveMal(mal0A, YutResult.BACK_DO)
 		})
 	}
 
@@ -264,10 +264,10 @@ class GameMalTests {
 
 		val mal0A = playerA.findMal(0)
 
-		playerA.moveMal(0, YutResult.BACK_DO)
-		playerA.updaMal(0)
+		playerA.moveMal(mal0A, YutResult.BACK_DO)
+		playerA.updaMal(mal0A)
 		println("mal 0: postion=${mal0A.getPosition()}, point=${mal0A.getPoint()}, valid=${mal0A.isValid()}")
 
-		playerA.moveMal(0, YutResult.DO)
+		playerA.moveMal(mal0A, YutResult.DO)
 	}
 }
