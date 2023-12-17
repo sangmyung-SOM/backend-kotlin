@@ -81,8 +81,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 				}
 			}
 
-			println("WAIT STATE : " + gameMessage.playerId + " " + gameMessage.sender + " " + gameMessage.roomId)
-
 			//1P가 있는 방에 2P가 들어오면 게임 시작 메시지 전송
 			if (gameMessage.playerId == "2P") {
 				gameMessage.type = GameStateType.START
@@ -102,7 +100,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 				// 예외사항 : 2P가 1P 보다 먼저 들어오게 되는 경우 대기
 				if (name1p == null) {
-					println("1P가 들어오지 않았습니다.")
 					gameMessage.type = GameStateType.WAIT
 					gameMessage.message = "1P가 들어오지 않았습니다."
 
@@ -139,7 +136,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
 		}
-		println("THROW : " + gameMessage.yut + " " + gameMessage.playerId + " " + gameMessage.roomId)
 	}
 
 	@MessageMapping("/game/question")
