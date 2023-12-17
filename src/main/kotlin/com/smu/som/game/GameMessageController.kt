@@ -262,7 +262,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	// 플레이어 점수 조회
 	@MessageMapping("/game/score")
 	fun getPlayerScore(request: GameScoreRequest.getGameScoreDTO) {
-		println("플레이어 점수 조회 소켓 통신 테스트")
 
 		var gameRoom : GameRoom = findGameRoom(request.gameId)
 		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
@@ -294,20 +293,15 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	// 소원권 패스 적립
 	@MessageMapping("/game/room/wish/pass")
 	fun passWish(request: GameMessage.GetPassWish) {
-		println("소원권 패스 적립 소켓 통신 테스트")
-		println("request.playerId = ${request.playerId}")
-		println("request.roomId = ${request.roomId}")
 
 		val gameId = request.roomId
 		val gameRoom : GameRoom = findGameRoom(gameId!!)
 		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
 
 		if (request.passCard == 0) {
-			println("소원권 사용")
 			player?.usePassCard()
 
 		} else if (request.passCard == 1) {
-			println("소원권 적립")
 			player?.addPassCard()
 
 		}
@@ -322,7 +316,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			.append("/wish/pass")
 			.toString()
 
-		println("소원권 패스 ${response.passCard}개 남음 ${response.playerId}")
 		sendingOperations.convertAndSend(url, response)
 
 	}
@@ -361,7 +354,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			type = type
 		)
 
-		println("턴 변경 ${turnChange.type} ${turnChange.playerId}")
 		sendingOperations.convertAndSend("/topic/game/turn/" + turnChange.roomId, turnChange)
 	}
 }
