@@ -24,11 +24,4 @@ class GameController {
 	fun roomInfo(@PathVariable roomId: String): ChatRoom?{
 		return chatService.findById(roomId)
 	}
-
-	@GetMapping("/turn")
-	@ResponseBody
-	fun btnState(): Boolean{
-		return gameService.getBtnState()
-	}
-
 }

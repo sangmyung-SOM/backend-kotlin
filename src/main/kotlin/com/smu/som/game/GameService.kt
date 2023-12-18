@@ -9,15 +9,6 @@ class GameService {
 
 	private var btnState: Boolean = false
 
-	fun findRoom(roomId: UUID): GameRoom? {
-		for (gameRoom in gameRoomList) {
-			if (gameRoom.roomId == roomId) {
-				return gameRoom
-			}
-		}
-		return null
-	}
-
 	fun playGame(sum: Int): Int {
 		return percentage(sum)
 	}
@@ -36,9 +27,4 @@ class GameService {
 		}
 		return -1
 	}
-
-	fun getBtnState() : Boolean {
-		return btnState
-	}
-
 }

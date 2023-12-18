@@ -28,7 +28,6 @@ class GameRoom(var roomId: UUID, var sender: String?, var turn: String?, var pro
 				profileURL = profileURL
 			)
 		}
-
 	}
 
 	public fun findPlayer(playerId: String) : PlayerTemp{
