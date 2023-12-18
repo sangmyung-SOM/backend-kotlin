@@ -51,6 +51,9 @@ class GameRoomService (var gameRooms: HashMap<String, GameRoomSetting> = LinkedH
 		if (findById(roomId) != null) {
 			gameRooms.remove(roomId)
 		}
+		else {
+			println("No such room $roomId")
+		}
 	}
 	fun updateState(roomId: String, b: Boolean) : Boolean {
 		if (findById(roomId) != null) {
