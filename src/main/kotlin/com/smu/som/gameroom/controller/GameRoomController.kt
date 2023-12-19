@@ -20,6 +20,7 @@ class GameRoomController {
 				   @RequestParam category: String,
 				   @RequestParam adult: String ): GameRoomSetting
 	{
+		println("게임방 생성")
 		return gameRoomService.createGameRoom(name, category, adult)
 	}
 
@@ -40,6 +41,7 @@ class GameRoomController {
 	@DeleteMapping("/room/{roomId}")
 	@ResponseBody
 	fun deleteRoom(@PathVariable roomId: String) {
+		println("게임방 삭제")
 		gameRoomService.deleteById(roomId)
 	}
 

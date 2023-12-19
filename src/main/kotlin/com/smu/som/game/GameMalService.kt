@@ -58,6 +58,24 @@ class GameMalService {
 		var caughtMalList : List<Int> = ArrayList()
 		var updaMalId : Int = -1
 
+		if(!mal.isValid()){
+			val tempRequest : GameMalRequest.GetMalMovePositionDTO = GameMalRequest.GetMalMovePositionDTO(
+				userId = request.userId,
+				playerId = request.playerId,
+				gameId = request.gameId,
+				yutResult = request.yutResult
+			);
+			val temp:GameMalResponse.GetMalMovePosition = getNextPositionOfAllMal(gameRoom, tempRequest)
+			for(malInfo in temp.malList){
+				println("말id: ${malInfo.malId}, 현위치: ${malInfo.position}, 다음위치: ${malInfo.nextPosition}, 끝?: ${malInfo.isEnd}")
+			}
+			println("temp = ${temp}, malInfoSize: ${temp.malList.size}, newMalId=${temp.newMalId}")
+			for(tempMal in player.getMalList()){
+				println("말id: ${tempMal.id}, 업힌말?: ${tempMal.isUped()}, 끝난말?: ${tempMal.isEnd()}, 현위치: ${tempMal.getPosition()}")
+			}
+			throw RuntimeException("유효하지 않은 말! 게임방: ${gameRoom.roomId}에서 말id: ${mal.id}, 현위치 ${mal.getPosition()}를 이동시키려 함")
+		}
+
 		val movement = player.moveMal(mal, request.yutResult)
 		if(!mal.isEnd()){
 			caughtMalList = player.catchMal(mal, oppPlayer)

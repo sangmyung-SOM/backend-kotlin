@@ -160,7 +160,7 @@ class Mal (val id : Int) {
 	// 다른 말에 업혀있거나, 이미 끝난 말이면 예외 발생
 	private fun checkValid(){
 		if (isEnd || isUped){
-			throw RuntimeException("말이 유효하지 않음")
+			throw RuntimeException("말이 유효하지 않음: isEnd=${isEnd}, isUped=${isUped}")
 		}
 	}
 
@@ -180,6 +180,10 @@ class Mal (val id : Int) {
 
 	public fun isEnd() : Boolean{
 		return isEnd
+	}
+
+	public fun isUped() : Boolean{
+		return isUped
 	}
 
 }
