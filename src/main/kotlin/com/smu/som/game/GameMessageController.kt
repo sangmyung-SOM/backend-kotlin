@@ -141,7 +141,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		sendingOperations.convertAndSend("/topic/game/question/"+request.roomId, request)
 	}
 
-	// 질문 변경을 선택한 경우 패널티 적립 (말 놓기 X)
 	@MessageMapping("/game/question/pass")
 	fun questionPass(request: QnARequest.GetQuestionDTO){
 		val gameRoom : GameRoom = findGameRoom(request.roomId)
@@ -156,7 +155,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		player.yuts = IntArray(6) {0}
 	}
 
-	// 상대방에게 내가 원하는 질문
 	@MessageMapping("/game/question/wish")
 	fun questionWish(request: QnARequest.GetAnswerDTO){
 		val response = QnARequest.GetQuestionWishDTO(
@@ -259,7 +257,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		sendingOperations.convertAndSend(url, response)
 	}
 
-	// 플레이어 점수 조회
 	@MessageMapping("/game/score")
 	fun getPlayerScore(request: GameScoreRequest.getGameScoreDTO) {
 
@@ -290,7 +287,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		sendingOperations.convertAndSend("/topic/game/score/" + request.gameId, request)
 	}
 
-	// 소원권 패스 적립
 	@MessageMapping("/game/room/wish/pass")
 	fun passWish(request: GameMessage.GetPassWish) {
 
