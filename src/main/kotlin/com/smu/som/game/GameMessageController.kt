@@ -177,7 +177,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		println("request.gameId = ${request.gameId}")
 		println("request.yutResult = ${request.yutResult}")
 
-		var gameRoom : GameRoom = findGameRoom(request.gameId)
+		val gameRoom : GameRoom = findGameRoom(request.gameId)
 
 		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
 		if (player?.getPenalty() == 1) {
@@ -214,39 +214,32 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 		player.yuts[num] -= 1
 
-		// 말 잡은 경우
+		// 말 잡은 경우 한 번 더 던지기
 		if(response.isCatchMal) {
-
-			var gameMessage = GameMessage.GetThrowResult(
+			val gameMessage = GameMessage.GetThrowResult(
 				roomId = request.gameId,
 				playerId = request.playerId,
 				yut = request.yutResult.toString(),
 				type = GameStateType.CATCH_MAL
 			)
-
 			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
-		}
-		// 윷이나 모가 나왔는데 윷을 한 번 더 던지기 전에 윷이나 모만큼 말을 이동시키는 경우 -> 턴 변경하지 않음
-		else if (player.yuts.sum() == 0 && (num == 4 || num == 5)) {
 			turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
-			player.yuts = IntArray(6) { 0 }
 		}
 		// 말 이동 하고도 결과가 남아있는 경우 -> 턴 변경하지 않음
-		else if (player.yuts.sum() >= 1) { // 이동할 말들이 아직 남아있는 경우
+		else if (player.yuts.sum() >= 1) { 
 			if (player.yuts.sum() == 1 && (num != 4 && num != 5)) { // 윷이나 모가 아닌 경우
 				turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
 			}
 			else turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
 		}
-		// 윷이나 모가 아니면서 결과가 남아있는 경우 말 이동만 하고 끝이기 때문에 턴 변경
-		else if (player.yuts.sum() == 1 && (num != 4 && num != 5)) {
-			turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
-			// 윷이나 모 결과가 아직 남아있기 때문에 초기화 하지 않음
-		}
 		// 윷이나 모가 안나오고 도 개 걸 빽도 중 한가지가 나온 경우 -> 턴 변경
 		else if (player.yuts.sum() == 0)
 		{
-			turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
+			if (num == 0 || num == 1 || num == 2 || num == 3) {
+				turnChange(request.gameId, request.playerId, GameStateType.TURN_CHANGE)
+			}
+			// 윷이나 모가 나왔는데 윷을 한 번 더 던지기 전에 윷이나 모만큼 말을 이동시키는 경우 -> 턴 변경하지 않음(한 번 더 던져야함)
+			else turnChange(request.gameId, request.playerId, GameStateType.MY_TURN)
 			player.yuts = IntArray(6) { 0 }
 		}
 
@@ -349,7 +342,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 			playerId = playerId,
 			type = type
 		)
-
+		if (type == GameStateType.TURN_CHANGE) {
+			println("턴 변경")
+		}
+		else println("턴 유지 player : $playerId")
 		sendingOperations.convertAndSend("/topic/game/turn/" + turnChange.roomId, turnChange)
 	}
 }
