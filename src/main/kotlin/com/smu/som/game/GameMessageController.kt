@@ -133,7 +133,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 		player.yuts[num] += 1
 		println("윷 던진 결과 : $num, ${gameMessage.type}, ${gameMessage.roomId}, ${gameMessage.playerId}")
-		if (GameStateType.THROW == gameMessage.type) {
+		if (GameStateType.THROW == gameMessage.type || GameStateType.FIRST_THROW == gameMessage.type) {
 			if(num == 4 || num == 5) //윷이나 모
 				gameMessage.type = GameStateType.ONE_MORE_THROW
 
