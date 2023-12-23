@@ -119,6 +119,17 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val gameRoom = findGameRoom(gameMessage.roomId!!)
 		val player = gameRoom.findPlayer(gameMessage.playerId!!)
 		val num = gameService.playGame(player.yuts.sum())
+
+		// 처음 던진 윷이 빽도인 경우 한번 더 던짐
+		if (GameStateType.FIRST_THROW == gameMessage.type && num == 0) {
+
+			gameMessage.type = GameStateType.FIRST_THROW
+			gameMessage.yut = num.toString() // 윷 던진 결과
+
+			sendingOperations.convertAndSend("/topic/game/throw/"+gameMessage.roomId,gameMessage)
+			return
+		}
+
 		player.yuts[num] += 1
 		
 		if (GameStateType.THROW == gameMessage.type) {
