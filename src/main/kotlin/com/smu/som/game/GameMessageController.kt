@@ -120,6 +120,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val player = gameRoom.findPlayer(gameMessage.playerId!!)
 		val num = gameService.playGame(player.yuts.sum())
 
+		println("윷 던지기")
 		// 처음 던진 윷이 빽도인 경우 한번 더 던짐
 		if (GameStateType.FIRST_THROW == gameMessage.type && num == 0) {
 
@@ -131,7 +132,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 
 		player.yuts[num] += 1
-		
+		println("윷 던진 결과 : $num, ${gameMessage.type}, ${gameMessage.roomId}, ${gameMessage.playerId}")
 		if (GameStateType.THROW == gameMessage.type) {
 			if(num == 4 || num == 5) //윷이나 모
 				gameMessage.type = GameStateType.ONE_MORE_THROW
