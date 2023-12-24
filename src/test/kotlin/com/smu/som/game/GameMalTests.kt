@@ -203,6 +203,34 @@ class GameMalTests {
 	}
 
 	@Test
+	public fun 말움직이기_빽도_테스트8(){
+		// 도 -> 빽도로 움직인 말을 다른 플레이어가 못잡는 에러
+
+		val playerA = PlayerTemp("1P")
+		val playerB = PlayerTemp("2P")
+
+		val mal0A = playerA.findMal(0)
+		val mal0B = playerB.findMal(0)
+
+		// 도 -> 빽도
+		mal0A.move(YutResult.DO)
+		mal0A.move(YutResult.BACK_DO)
+		Assertions.assertEquals(20, mal0A.getPosition())
+
+		// 모 -> 모 -> 걸 -> 걸
+		mal0B.move(YutResult.MO)
+		mal0B.move(YutResult.GIRL)
+		mal0B.move(YutResult.GIRL)
+		Assertions.assertEquals(20, mal0B.getPosition())
+
+		// 말 잡기
+		val catchMalList = playerB.catchMal(mal0B, playerA)
+		Assertions.assertEquals(0, mal0A.getPosition())
+		Assertions.assertEquals(20, mal0B.getPosition())
+		Assertions.assertEquals(0, catchMalList.first())
+	}
+
+	@Test
 	public fun 말잡기_테스트(){
 		val playerA = PlayerTemp("1P")
 		val playerB = PlayerTemp("2P")
