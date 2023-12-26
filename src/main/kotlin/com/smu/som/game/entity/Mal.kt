@@ -3,6 +3,7 @@ package com.smu.som.game.entity
 class Mal (val id : Int) {
 
 	private var position : Int
+	private var movementRecord: MutableList<Int> // 움직인 기록
 	private var updaMalList : MutableList<Mal> // 업은 말
 	private var isEnd : Boolean
 	private var isUped : Boolean // 다른 말에게 업혔는지 여부
@@ -10,6 +11,7 @@ class Mal (val id : Int) {
 
 	init {
 		this.position = 0
+		this.movementRecord = ArrayList()
 		this.updaMalList = ArrayList()
 		this.isEnd = false
 		this.isUped = false
@@ -34,6 +36,7 @@ class Mal (val id : Int) {
 		}
 
 		this.position = movement.last()
+		movement.forEach { position -> movementRecord.add(position) }
 
 		return movement
 	}
@@ -48,12 +51,17 @@ class Mal (val id : Int) {
 		if(yutResult == YutResult.BACK_DO){
 			when(position){
 				0 -> {movements.add(0)}
-				1 -> { movements.add(20)}
-				21 -> {movements.add(5)}
-				23->{movements.add(27)}
-				29->{movements.add(23)}
+				1 -> {movements.add(20)}
+				20 -> {
+					if(movementRecord[movementRecord.size-2] == 1){ // 도 -> 빽도 -> 빽도인 경우를위해
+						movements.add(19)
+					}
+					else{
+						movements.add(movementRecord[movementRecord.size-2])
+					}
+				}
 				// 나머지
-				else -> {movements.add(position-1)}
+				else -> {movements.add(movementRecord[movementRecord.size-2])}
 			}
 			return movements
 		}
@@ -125,6 +133,7 @@ class Mal (val id : Int) {
 		this.position = 0
 		this.isUped = false
 		this.updaMalList.clear()
+		this.movementRecord.clear()
 	}
 
 	// 말 업기
