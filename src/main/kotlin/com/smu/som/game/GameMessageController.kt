@@ -157,9 +157,11 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	fun questionPass(request: QnARequest.GetQuestionDTO){
 		val gameRoom : GameRoom = findGameRoom(request.roomId)
 		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
+
 		player?.addPenalty()
 
 		request.penalty = player?.getPenalty()!!
+
 		sendingOperations.convertAndSend("/topic/game/question/"+request.roomId, request)
 
 		// 턴 변경
