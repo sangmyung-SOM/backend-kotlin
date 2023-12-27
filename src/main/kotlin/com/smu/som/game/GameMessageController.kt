@@ -191,13 +191,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 		val gameRoom : GameRoom = findGameRoom(request.gameId)
 
-		val player : PlayerTemp? = request.playerId?.let { gameRoom.findPlayer(it) }
-		if (player?.getPenalty() == 1) {
-			println("페널티가 있어서 말을 놓을 수 없습니다. ${player?.getPenalty()}")
-			player.addPenalty() // 2로 유지 시키기 ( 1로 유지하는 경우 조건문에서 걸림 )
-			return
-		}
-
 		// 나머진 다 service 클래스에서
 		val response: GameMalResponse.GetMalMovePosition = gameMalService.getNextPositionOfAllMal(gameRoom, request)
 

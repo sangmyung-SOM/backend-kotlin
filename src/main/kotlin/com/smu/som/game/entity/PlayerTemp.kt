@@ -57,6 +57,11 @@ class PlayerTemp(id : String) {
 		return malList[malId]
 	}
 
+	// 해당 윷을 사용자가 던졌었는지 확인
+	public fun checkYutValid(yutResult: YutResult) : Boolean{
+		return yuts[yutResult.id] > 0
+	}
+
 	public fun getMalList(): Array<Mal>{
 		return this.malList
 	}
@@ -80,6 +85,11 @@ class PlayerTemp(id : String) {
 
 	fun addPenalty() {
 		this.penalty++
+
+		// 패널티로 던진 윷 사용 못함
+		for(i in 0 until 6){
+			yuts[i] = 0
+		}
 	}
 
 	fun getPenalty(): Int {
