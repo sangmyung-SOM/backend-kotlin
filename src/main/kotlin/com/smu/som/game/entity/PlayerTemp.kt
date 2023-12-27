@@ -6,7 +6,7 @@ class PlayerTemp(id : String) {
 	private var malList : Array<Mal>
 	private var score : IntArray
 	private var passCard : Int
-	private var penalty : Int
+	private var penalty : Boolean
 	var yuts : IntArray
 
 	init {
@@ -14,7 +14,7 @@ class PlayerTemp(id : String) {
 		malList = Array<Mal>(4, {i -> Mal(i)})
 		this.score = IntArray(4){ 0 }
 		this.passCard = 0
-		this.penalty = 0
+		this.penalty = false
 		this.yuts = IntArray(6){ 0 }
 
 	}
@@ -84,7 +84,7 @@ class PlayerTemp(id : String) {
 	}
 
 	fun addPenalty() {
-		this.penalty++
+		this.penalty = true
 
 		// 패널티로 던진 윷 사용 못함
 		for(i in 0 until 6){
@@ -93,7 +93,12 @@ class PlayerTemp(id : String) {
 	}
 
 	fun getPenalty(): Int {
-		return this.penalty
+		if(penalty){
+			return 1
+		}
+		else{
+			return 0
+		}
 	}
 
 	fun usePassCard() {
