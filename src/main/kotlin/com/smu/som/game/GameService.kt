@@ -15,9 +15,9 @@ class GameService {
 
 	private fun percentage(sum: Int) : Int {
 		val range = (1..16)
-		var per = arrayOf(4, 0, 0, 0, 7, 5)     // 윷 확률
-//		if (sum > 0)
-//			per = arrayOf(1, 4, 6, 5)           // 확률 재설정
+		var per = arrayOf(1, 3, 6, 4, 1, 1)     // 윷 확률
+		if (sum > 0)
+			per = arrayOf(1, 4, 6, 5)           // 확률 재설정
 		var num = range.random()
 
 		for ((index,item) in per.withIndex()) {
