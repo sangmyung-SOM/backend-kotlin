@@ -59,7 +59,30 @@ class PlayerTemp(id : String) {
 
 	// 해당 윷을 사용자가 던졌었는지 확인
 	public fun checkYutValid(yutResult: YutResult) : Boolean{
-		return yuts[yutResult.id] > 0
+		// 해당 윷을 사용자가 던졌고, 윷판에 말이 없고 빽도 제외 다른 윷결과를 선택할 수 있을 때, 빽도 먼저 클릭할 수 없음.
+		return yuts[yutResult.id] > 0 && checkBackDoValid(yutResult)
+	}
+
+	// 빽도를 사용할 수 있는지 확인
+	private fun checkBackDoValid(yutResult: YutResult): Boolean{
+		if(yutResult != YutResult.BACK_DO){
+			return true
+		}
+
+		var malInBoardNum = 0
+		malList.forEach { mal ->
+			if(mal.getPosition() > 0){
+				malInBoardNum++
+			}
+		}
+
+		if(malInBoardNum == 0){
+			if(yuts.sum() > yuts[YutResult.BACK_DO.id]){
+				return false // 윷판에 말이 없고 빽도를 제외한 다른 윷결과를 선택할 수 있을 때, 빽도 먼저 클릭할 수 없음.
+			}
+		}
+
+		return true
 	}
 
 	public fun getMalList(): Array<Mal>{
