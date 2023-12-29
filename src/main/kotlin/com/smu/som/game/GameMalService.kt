@@ -14,9 +14,10 @@ class GameMalService {
 	public fun getNextPositionOfAllMal(gameRoom: GameRoom, request: GameMalRequest.GetMalMovePositionDTO) : GameMalResponse.GetMalMovePosition{
 		val player : PlayerTemp = gameRoom.findPlayer(request.playerId)
 		var newMalId : Int = -1 // 새로 추가할 수 있는 말
+		var isSuccess: Boolean = true
 
 		if(!player.checkYutValid(request.yutResult)){
-			throw RuntimeException("사용자가 던지지 않은 윷을 이용하려고 함.")
+			isSuccess = false
 		}
 
 		// 말 움직일 수 있는 위치 찾기
@@ -51,6 +52,7 @@ class GameMalService {
 		}
 
 		return GameMalResponse.GetMalMovePosition(
+			isSuccess = isSuccess,
 			userId = request.userId,
 			playerId = request.playerId,
 			yutResult = request.yutResult,
@@ -68,6 +70,9 @@ class GameMalService {
 		var caughtMalList : List<Int> = ArrayList()
 		var updaMalId : Int = -1
 
+		if(!player.checkYutValid(request.yutResult)){
+			throw RuntimeException("사용자가 던지지 않은 윷을 이용하려고 함.")
+		}
 		if(!mal.isValid()){
 			throw RuntimeException("유효하지 않은 말! 게임방: ${gameRoom.roomId}에서 말id: ${mal.id}, 현위치 ${mal.getPosition()}를 이동시키려 함")
 		}
