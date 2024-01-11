@@ -171,6 +171,12 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 	@MessageMapping("/game/question/wish")
 	fun questionWish(request: QnARequest.GetAnswerDTO){
+
+		if (request.answer == "추가 질문권 사용") {
+			sendingOperations.convertAndSend("/topic/game/question/wish/notice"+request.roomId, request)
+			return
+		}
+
 		val response = QnARequest.GetQuestionWishDTO(
 			playerId = request.playerId,
 			question = request.answer
@@ -180,6 +186,8 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 	@MessageMapping("/game/answer")
 	fun answer(request: QnARequest.GetAnswerDTO){
+		val playerTemp = findGameRoom(request.roomId).findPlayer(request.playerId!!)
+		playerTemp?.initPenalty()
 		sendingOperations.convertAndSend("/topic/game/answer/" + request.roomId, request)
 	}
 

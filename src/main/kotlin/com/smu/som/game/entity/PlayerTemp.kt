@@ -127,4 +127,8 @@ class PlayerTemp(id : String) {
 	fun usePassCard() {
 		this.passCard--
 	}
+
+	fun initPenalty() {
+		this.penalty = false
+	}
 }
