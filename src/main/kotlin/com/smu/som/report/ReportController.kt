@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/report")
+@RequestMapping("/report")
 class ReportController(
 	private val reportService: ReportService
 ) {
