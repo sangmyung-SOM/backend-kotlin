@@ -14,20 +14,20 @@ class ReportController(
 	@PostMapping("/{gameRoomId}/qna")
 	@ResponseBody
 	fun sendQnA(
-		@PathVariable(name = "gameRoomId") gameroomId: String,
+		@PathVariable(name = "gameRoomId") gameRoomId: String,
 		@RequestBody qna: ReadReportDTO
 	) : ResponseEntity<Any> {
 		println("sendQnA answer : ${qna.answer}")
-		return ResponseEntity.ok().body(reportService.sendQnA(gameroomId, qna))
+		return ResponseEntity.ok().body(reportService.sendQnA(gameRoomId, qna))
 	}
 
 	@GetMapping("/{gameRoomId}/qna")
 	@ResponseBody
 	fun getQnA(
-		@PathVariable(name = "gameRoomId") gameroomId: String
+		@PathVariable(name = "gameRoomId") gameRoomId: String
 	) : List<ReadReportDTO> {
 		println("getQnA")
-		return reportService.getQnA(gameroomId)
+		return reportService.getQnA(gameRoomId)
 	}
 
 }
