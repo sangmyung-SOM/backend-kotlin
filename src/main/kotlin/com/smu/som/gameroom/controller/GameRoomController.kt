@@ -18,10 +18,16 @@ class GameRoomController {
 	@ResponseBody
 	fun createRoom(@RequestParam name: String,
 				   @RequestParam category: String,
-				   @RequestParam adult: String ): GameRoomSetting
+				   @RequestParam adult: String,
+				   @RequestParam(name="mal") malNum: Int): GameRoomSetting
 	{
 		println("게임방 생성")
-		return gameRoomService.createGameRoom(name, category, adult)
+
+		if(malNum < 1 || 4 < malNum ){
+			throw RuntimeException("말의 개수는 1~4 사이어야합니다. 요청한 말=${malNum}")
+		}
+
+		return gameRoomService.createGameRoom(name, category, adult, malNum)
 	}
 
 	@GetMapping("/rooms")

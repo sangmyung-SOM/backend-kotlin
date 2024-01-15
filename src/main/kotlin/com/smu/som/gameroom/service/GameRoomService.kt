@@ -15,8 +15,8 @@ import kotlin.collections.LinkedHashMap
 @NoArgsConstructor
 class GameRoomService (var gameRooms: HashMap<String, GameRoomSetting> = LinkedHashMap<String, GameRoomSetting>())
 {
-	fun createGameRoom(name: String, category: String, adult: String): GameRoomSetting {
-		var gameRoomSetting: GameRoomSetting = GameRoomSetting.of(name, category, adult)
+	fun createGameRoom(name: String, category: String, adult: String, malNum: Int): GameRoomSetting {
+		var gameRoomSetting: GameRoomSetting = GameRoomSetting.of(name, category, adult, malNum)
 		gameRooms.put(gameRoomSetting.roomId!!, gameRoomSetting)
 		return gameRoomSetting
 	}
