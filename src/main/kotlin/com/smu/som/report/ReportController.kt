@@ -12,6 +12,7 @@ class ReportController(
 ) {
 
 	@PostMapping("/{gameRoomId}/qna")
+	@ResponseBody
 	fun sendQnA(
 		@PathVariable(name = "gameRoomId") gameroomId: String,
 		@RequestBody qna: ReadReportDTO
@@ -21,6 +22,7 @@ class ReportController(
 	}
 
 	@GetMapping("/{gameRoomId}/qna")
+	@ResponseBody
 	fun getQnA(
 		@PathVariable(name = "gameRoomId") gameroomId: String
 	) : List<ReadReportDTO> {
