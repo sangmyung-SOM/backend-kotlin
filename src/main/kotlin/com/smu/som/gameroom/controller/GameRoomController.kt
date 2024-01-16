@@ -16,7 +16,7 @@ class GameRoomController {
 	private val gameRoomService: GameRoomService = GameRoomService()
 	private val reportService: ReportService = ReportService()
 
-	@PostMapping("/room/create")
+	@PostMapping("/room")
 	@ResponseBody
 	fun createRoom(@RequestParam name: String,
 				   @RequestParam category: String,
@@ -53,7 +53,7 @@ class GameRoomController {
 		return gameRoomService.updateState(roomId, state)
 	}
 
-	@PostMapping("/report/{gameRoomId}/qna")
+	@RequestMapping(value = ["/report/{gameRoomId}/qna"], method = [RequestMethod.POST])
 	@ResponseBody
 	fun sendQnA(
 		@PathVariable(name = "gameRoomId") gameRoomId: String,
