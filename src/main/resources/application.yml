@@ -7,3 +7,9 @@ server:
   servlet:
     session:
       timeout: 3600 # 1시간
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG

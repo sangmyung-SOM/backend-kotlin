@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/game")
-@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class GameRoomController {
 
 	private val gameRoomService: GameRoomService = GameRoomService()
