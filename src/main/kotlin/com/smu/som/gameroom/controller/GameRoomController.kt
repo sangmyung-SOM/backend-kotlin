@@ -16,23 +16,23 @@ class GameRoomController {
 	private val gameRoomService: GameRoomService = GameRoomService()
 	private val reportService: ReportService = ReportService()
 
-	@PostMapping("/room/reports/{gameRoomId}/qna")
+	@PostMapping("/room/reports/{roomId}/qna")
 	@ResponseBody
 	fun sendQnA(
-		@PathVariable gameRoomId: String,
+		@PathVariable roomId: String,
 		@RequestParam answer : String,
 		@RequestParam question : String,
 		@RequestParam playerId : String
 	) : Boolean {
 		println("sendQnA answer : ${answer}")
 //		return reportService.sendQnA(gameRoomId, qna)
-		return reportService.sendQnA(gameRoomId, ReadReportDTO(answer, playerId, question))
+		return reportService.sendQnA(roomId, ReadReportDTO(answer, playerId, question))
 	}
 
-	@GetMapping("/room/reports/{gameRoomId}/qna")
+	@GetMapping("/room/reports/{roomId}/qna")
 	@ResponseBody
 	fun getQnA(
-		@PathVariable(name = "gameRoomId") gameRoomId: String
+		@PathVariable(name = "roomId") gameRoomId: String
 	) : List<ReadReportDTO> {
 		println("getQnA")
 		return reportService.getQnA(gameRoomId)
