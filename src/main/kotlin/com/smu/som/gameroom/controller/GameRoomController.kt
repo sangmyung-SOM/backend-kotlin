@@ -16,6 +16,11 @@ class GameRoomController {
 	private val gameRoomService: GameRoomService = GameRoomService()
 	private val reportService: ReportService = ReportService()
 
+	@GetMapping("/log")
+	fun logTest() {
+		println("This is a test log message from the server.")
+	}
+
 	@PostMapping("/room/reports/{roomId}/qna")
 	@ResponseBody
 	fun sendQnA(
