@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.*
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/game")
+@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 class GameRoomController {
 
 	private val gameRoomService: GameRoomService = GameRoomService()
 	private val reportService: ReportService = ReportService()
 
 	@GetMapping("/log")
+	@ResponseBody
 	fun logTest() {
 		println("This is a test log message from the server.")
 	}
