@@ -5,7 +5,6 @@ import com.smu.som.gameroom.service.GameRoomService
 import com.smu.som.report.ReadReportDTO
 import com.smu.som.report.ReportService
 import lombok.RequiredArgsConstructor
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
