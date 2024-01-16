@@ -53,7 +53,7 @@ class GameRoomController {
 		return gameRoomService.updateState(roomId, state)
 	}
 
-	@PostMapping("/room/report/{gameRoomId}/qna")
+	@PostMapping("/room/reports/{gameRoomId}/qna")
 	@ResponseBody
 	fun sendQnA(
 		@PathVariable gameRoomId: String,
@@ -66,7 +66,7 @@ class GameRoomController {
 		return reportService.sendQnA(gameRoomId, ReadReportDTO(answer, playerId, question))
 	}
 
-	@GetMapping("/room/report/{gameRoomId}/qna")
+	@GetMapping("/room/reports/{gameRoomId}/qna")
 	@ResponseBody
 	fun getQnA(
 		@PathVariable(name = "gameRoomId") gameRoomId: String
