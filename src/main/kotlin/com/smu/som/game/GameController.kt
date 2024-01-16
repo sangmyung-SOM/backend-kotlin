@@ -5,34 +5,29 @@ import com.smu.som.chatwithroom.ChatService
 import com.smu.som.reportQnA.ReadReportDTO
 import com.smu.som.reportQnA.ReportService
 import lombok.RequiredArgsConstructor
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/game")
-class GameController(
-	private val reportService: ReportService
-) {
+@RequestMapping("/game")
+class GameController {
 
-	@PostMapping("/{roomId}/qna")
+	var reportService: ReportService = ReportService()
+
+	@PostMapping("/room/{roomId}")
 	@ResponseBody
-	fun sendQnA(
-		@PathVariable(name = "roomId") roomId: String,
+	fun saveQuestionAndAnswer(@PathVariable roomId: String,
 		@RequestBody qna: ReadReportDTO
-	) : ResponseEntity<Any> {
-		println("sendQnA answer : ${qna.answer}")
-		return ResponseEntity.ok().body(reportService.sendQnA(roomId, qna))
+	): Boolean {
+		println("saveQuestionAndAnswer answer : ${qna.answer}")
+		return reportService.sendQnA(roomId, qna)
 	}
 
-	@GetMapping("/{roomId}/qna")
+	@GetMapping("/room/{roomId}")
 	@ResponseBody
-	fun getQnA(
-		@PathVariable(name = "roomId") roomId: String
-	) : List<ReadReportDTO> {
-		println("getQnA")
+	fun getQuestionAndAnswer(@PathVariable roomId: String): List<ReadReportDTO> {
+		println("getQuestionAndAnswer")
 		return reportService.getQnA(roomId)
 	}
-
 }
