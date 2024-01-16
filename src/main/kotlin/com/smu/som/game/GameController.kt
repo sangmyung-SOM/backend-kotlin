@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/game")
+@RequestMapping("/game")
 class GameController {
 
 	var reportService: ReportService = ReportService()
 
-	@PostMapping("/room/{roomId}")
-	@ResponseBody
-	fun saveQuestionAndAnswer(@PathVariable roomId: String,
-		@RequestBody qna: ReadReportDTO
-	): Boolean {
-		println("saveQuestionAndAnswer answer : ${qna.answer}")
-		return reportService.sendQnA(roomId, qna)
-	}
+//	@PostMapping("/room/{roomId}")
+//	@ResponseBody
+//	fun saveQuestionAndAnswer(@PathVariable roomId: String,
+//		@RequestBody qna: ReadReportDTO
+//	): Boolean {
+//		println("saveQuestionAndAnswer answer : ${qna.answer}")
+//		return reportService.sendQnA(roomId, qna)
+//	}
 
 	@GetMapping("/room/{roomId}")
 	@ResponseBody
