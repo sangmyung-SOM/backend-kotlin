@@ -56,7 +56,7 @@ class GameRoomController {
 	@PostMapping("/room/report/{gameRoomId}/qna")
 	@ResponseBody
 	fun sendQnA(
-		@PathVariable(name = "gameRoomId") gameRoomId: String,
+		@PathVariable gameRoomId: String,
 		@RequestParam answer : String,
 		@RequestParam question : String,
 		@RequestParam playerId : String
