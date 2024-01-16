@@ -2,8 +2,8 @@ package com.smu.som.gameroom.controller
 
 import com.smu.som.gameroom.GameRoomSetting
 import com.smu.som.gameroom.service.GameRoomService
-import com.smu.som.report.ReadReportDTO
-import com.smu.som.report.ReportService
+import com.smu.som.reportQnA.ReadReportDTO
+import com.smu.som.reportQnA.ReportService
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
@@ -15,6 +15,28 @@ class GameRoomController {
 
 	private val gameRoomService: GameRoomService = GameRoomService()
 	private val reportService: ReportService = ReportService()
+
+	@PostMapping("/room/reports/{gameRoomId}/qna")
+	@ResponseBody
+	fun sendQnA(
+		@PathVariable gameRoomId: String,
+		@RequestParam answer : String,
+		@RequestParam question : String,
+		@RequestParam playerId : String
+	) : Boolean {
+		println("sendQnA answer : ${answer}")
+//		return reportService.sendQnA(gameRoomId, qna)
+		return reportService.sendQnA(gameRoomId, ReadReportDTO(answer, playerId, question))
+	}
+
+	@GetMapping("/room/reports/{gameRoomId}/qna")
+	@ResponseBody
+	fun getQnA(
+		@PathVariable(name = "gameRoomId") gameRoomId: String
+	) : List<ReadReportDTO> {
+		println("getQnA")
+		return reportService.getQnA(gameRoomId)
+	}
 
 	@PostMapping("/room")
 	@ResponseBody
@@ -51,27 +73,5 @@ class GameRoomController {
 	@ResponseBody
 	fun updateRoomState(@PathVariable roomId: String, @RequestParam state : Boolean) : Boolean {
 		return gameRoomService.updateState(roomId, state)
-	}
-
-	@PostMapping("/room/reports/{gameRoomId}/qna")
-	@ResponseBody
-	fun sendQnA(
-		@PathVariable gameRoomId: String,
-		@RequestParam answer : String,
-		@RequestParam question : String,
-		@RequestParam playerId : String
-	) : Boolean {
-		println("sendQnA answer : ${answer}")
-//		return reportService.sendQnA(gameRoomId, qna)
-		return reportService.sendQnA(gameRoomId, ReadReportDTO(answer, playerId, question))
-	}
-
-	@GetMapping("/room/reports/{gameRoomId}/qna")
-	@ResponseBody
-	fun getQnA(
-		@PathVariable(name = "gameRoomId") gameRoomId: String
-	) : List<ReadReportDTO> {
-		println("getQnA")
-		return reportService.getQnA(gameRoomId)
 	}
 }

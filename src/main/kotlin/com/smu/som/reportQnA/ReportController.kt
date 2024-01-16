@@ -1,4 +1,4 @@
-package com.smu.som.report
+package com.smu.som.reportQnA
 
 import lombok.RequiredArgsConstructor
 import org.springframework.http.ResponseEntity

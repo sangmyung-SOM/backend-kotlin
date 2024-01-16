@@ -1,4 +1,4 @@
-package com.smu.som.report
+package com.smu.som.reportQnA
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
