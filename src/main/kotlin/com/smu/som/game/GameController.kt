@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/game")
+@RequestMapping("/api/game")
 class GameController {
 
 	var reportService: ReportService = ReportService()
