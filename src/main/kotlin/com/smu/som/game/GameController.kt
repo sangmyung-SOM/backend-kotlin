@@ -2,26 +2,32 @@ package com.smu.som.game
 
 import com.smu.som.chatwithroom.ChatRoom
 import com.smu.som.chatwithroom.ChatService
+import com.smu.som.reportQnA.ReadReportDTO
+import com.smu.som.reportQnA.ReportService
 import lombok.RequiredArgsConstructor
-import org.springframework.messaging.handler.annotation.MessageMapping
-import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/game")
 class GameController {
 
-	var gameService: GameService = GameService()
-	var chatService: ChatService = ChatService()
+	var reportService: ReportService = ReportService()
+
+//	@PostMapping("/room/{roomId}")
+//	@ResponseBody
+//	fun saveQuestionAndAnswer(@PathVariable roomId: String,
+//		@RequestBody qna: ReadReportDTO
+//	): Boolean {
+//		println("saveQuestionAndAnswer answer : ${qna.answer}")
+//		return reportService.sendQnA(roomId, qna)
+//	}
 
 	@GetMapping("/room/{roomId}")
 	@ResponseBody
-	fun roomInfo(@PathVariable roomId: String): ChatRoom?{
-		return chatService.findById(roomId)
+	fun getQuestionAndAnswer(@PathVariable roomId: String): List<ReadReportDTO> {
+		println("getQuestionAndAnswer")
+		return reportService.getQnA(roomId)
 	}
 }
