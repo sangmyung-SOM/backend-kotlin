@@ -7,12 +7,14 @@ import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.web.bind.annotation.RestController
+import javax.websocket.OnMessage
 
 @RestController
 @RequiredArgsConstructor
 @NoArgsConstructor
 class MessageController(
-    val sendingOperations: SimpMessageSendingOperations
+    val sendingOperations: SimpMessageSendingOperations,
+	var chatService: ChatService
 ) {
     @MessageMapping("/chat/message")
     fun enter(chatMessage: ChatMessage){
@@ -24,7 +26,7 @@ class MessageController(
 			chatMessage.gameRoomMsg = chatMessage.sender + " : " + chatMessage.message
 			sendingOperations.convertAndSend("/topic/game/chat/room/"+chatMessage.roomId,chatMessage)
 		}
-
+		chatService.findById(chatMessage.roomId!!)!!.chatList.add(chatMessage)
         sendingOperations.convertAndSend("/topic/chat/room/"+chatMessage.roomId,chatMessage)
 
     }
