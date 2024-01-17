@@ -22,7 +22,7 @@ class GameRoomController {
 		return "테스트 로그. 서버 동작 확인용"
 	}
 
-	@GetMapping("/log/v2")
+	@GetMapping("/rooms/v2")
 	fun logTest2() : String{
 		println("This is a test log message from the server. v2")
 		return "테스트 로그 v2. 서버 동작 확인용"
