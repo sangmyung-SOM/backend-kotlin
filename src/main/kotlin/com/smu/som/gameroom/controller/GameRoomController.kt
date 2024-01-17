@@ -18,8 +18,9 @@ class GameRoomController {
 
 	@GetMapping("/log")
 	@ResponseBody
-	fun logTest() {
+	fun logTest() : String{
 		println("This is a test log message from the server.")
+		return "테스트 로그. 서버 동작 확인용"
 	}
 
 	@PostMapping("/room/reports/{roomId}/qna")
