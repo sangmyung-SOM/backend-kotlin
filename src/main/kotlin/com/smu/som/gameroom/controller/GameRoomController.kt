@@ -56,7 +56,7 @@ class GameRoomController {
 				   @RequestParam category: String,
 				   @RequestParam adult: String ): GameRoomSetting
 	{
-		println("게임방 생성")
+		println("게임방 생성 v2")
 		return gameRoomService.createGameRoom(name, category, adult)
 	}
 
