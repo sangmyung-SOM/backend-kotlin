@@ -6,6 +6,8 @@ import com.smu.som.game.entity.Mal
 import com.smu.som.game.entity.PlayerTemp
 import com.smu.som.game.entity.YutResult
 import org.springframework.stereotype.Service
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class GameMalService {
@@ -24,7 +26,7 @@ class GameMalService {
 		val nextPositionMap = player.findNextPositionOfAllMal(request.yutResult)
 
 		var malMoveInfoList: ArrayList<GameMalResponse.MalMoveInfo>  = ArrayList()
-		for(mal in player.getMalList()){
+		for(mal in player.getMalList().reversedArray()){
 			if(!mal.isValid()){ // 업혀있거나 도착해서 사용할 수 없는 말
 				continue
 			}

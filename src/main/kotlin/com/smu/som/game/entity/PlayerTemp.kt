@@ -1,6 +1,6 @@
 package com.smu.som.game.entity
 
-class PlayerTemp(id : String) {
+class PlayerTemp(id : String, malLimit: Int) {
 
 	private var id : String // 1P 또는 2P
 	private var malList : Array<Mal>
@@ -11,12 +11,11 @@ class PlayerTemp(id : String) {
 
 	init {
 		this.id = id
-		malList = Array<Mal>(4, {i -> Mal(i)})
+		malList = Array<Mal>(malLimit, {i -> Mal(i)})
 		this.score = IntArray(4){ 0 }
 		this.passCard = 0
 		this.penalty = false
 		this.yuts = IntArray(6){ 0 }
-
 	}
 
 	// 말 이동하기

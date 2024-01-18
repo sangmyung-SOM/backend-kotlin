@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.web.bind.annotation.RestController
-import java.lang.RuntimeException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -53,11 +52,11 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 			if (gameMessage.playerId == "1P") {
 				gameMessage.sender?.let {
-					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_1P) , it)
+					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_1P, gameMessage.malNum) , it)
 				}
 			} else if (gameMessage.playerId == "2P") {
 				gameMessage.sender?.let {
-					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_2P) , it)
+					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_2P, gameMessage.malNum) , it)
 				}
 			}
 
@@ -222,6 +221,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 		val gameRoom: GameRoom = findGameRoom(request.gameId)
 		val player = gameRoom.findPlayer(request.playerId!!)
+
+		if(request.malId > gameRoom.malNum-1){
+			throw RuntimeException("제한된 말 개수를 넘는 요청")
+		}
 
 		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
 
