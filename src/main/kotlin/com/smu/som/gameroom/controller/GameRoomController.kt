@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/game")
 class GameRoomController {
@@ -17,9 +17,15 @@ class GameRoomController {
 	private val reportService: ReportService = ReportService()
 
 	@GetMapping("/log")
-	@ResponseBody
-	fun logTest() {
+	fun logTest() : String{
 		println("This is a test log message from the server.")
+		return "테스트 로그. 서버 동작 확인용"
+	}
+
+	@GetMapping("/rooms/v2")
+	fun logTest2() : String{
+		println("This is a test log message from the server. v2")
+		return "테스트 로그 v2. 서버 동작 확인용"
 	}
 
 	@PostMapping("/room/reports/{roomId}/qna")
@@ -51,7 +57,7 @@ class GameRoomController {
 				   @RequestParam adult: String,
 				   @RequestParam(name="mal") malNum: Int): GameRoomSetting
 	{
-		println("게임방 생성")
+		println("게임방 생성 v2")
 
 		if(malNum < 1 || 4 < malNum ){
 			throw RuntimeException("말의 개수는 1~4 사이어야합니다. 요청한 말=${malNum}")
