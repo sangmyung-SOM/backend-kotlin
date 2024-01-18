@@ -8,16 +8,16 @@ class GameRoomSetting(
 	var category:String?,
 	var adult:String?,
 	var playing:Boolean = false,
-	var malNum: Int
+	var malNumLimit: Int
 ) {
 	companion object {
-		fun of(roomName: String, category: String, adult: String, malNum: Int):GameRoomSetting{
+		fun of(roomName: String, category: String, adult: String, malNumLimit: Int):GameRoomSetting{
 			return GameRoomSetting(
 				roomId= UUID.randomUUID().toString(),
 				roomName=roomName,
 				category=category,
 				adult=adult,
-				malNum = malNum
+				malNumLimit = malNumLimit
 			)
 		}
 	}

@@ -20,20 +20,20 @@ class GameMessage {
 		var sender: String?
 		@JsonProperty("player_id")
 		var playerId: String? = ""
-		@JsonProperty("mal_num")
-		var malNum: Int
+		@JsonProperty("mal_num_limit")
+		var malNumLimit: Int
 
 		var userNameList: String? = ""
 		var profileURL_1P: String? = ""
 		var profileURL_2P: String? = ""
 		var message: String? = ""
 
-		constructor(type: GameStateType?, roomId: String?, sender: String?, playerId: String?, malNum: Int) {
+		constructor(type: GameStateType?, roomId: String?, sender: String?, playerId: String?, malNumLimit: Int) {
 			this.type = type
 			this.roomId = roomId
 			this.sender = sender
 			this.playerId = playerId
-			this.malNum = malNum
+			this.malNumLimit = malNumLimit
 		}
 	}
 

@@ -52,11 +52,11 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 			if (gameMessage.playerId == "1P") {
 				gameMessage.sender?.let {
-					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_1P, gameMessage.malNum) , it)
+					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_1P, gameMessage.malNumLimit) , it)
 				}
 			} else if (gameMessage.playerId == "2P") {
 				gameMessage.sender?.let {
-					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_2P, gameMessage.malNum) , it)
+					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_2P, gameMessage.malNumLimit) , it)
 				}
 			}
 
@@ -222,7 +222,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val gameRoom: GameRoom = findGameRoom(request.gameId)
 		val player = gameRoom.findPlayer(request.playerId!!)
 
-		if(request.malId > gameRoom.malNum-1){
+		if(request.malId > gameRoom.malNumLimit-1){
 			throw RuntimeException("제한된 말 개수를 넘는 요청")
 		}
 

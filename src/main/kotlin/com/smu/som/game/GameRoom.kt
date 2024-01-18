@@ -1,32 +1,29 @@
 package com.smu.som.game
 
-import com.smu.som.game.dto.GameMalResponse
 import com.smu.som.game.entity.PlayerTemp
-import com.smu.som.game.entity.YutResult
 import lombok.Getter
 import lombok.NoArgsConstructor
 import lombok.Setter
-import java.util.ArrayList
 import java.util.UUID
 
 @NoArgsConstructor
 @Getter
 @Setter
-class GameRoom(var roomId: UUID, var sender: String?, var turn: String?, var profileURL: String?, val malNum: Int) {
+class GameRoom(var roomId: UUID, var sender: String?, var turn: String?, var profileURL: String?, val malNumLimit: Int) {
 
 	// 이렇게 저장해놓는것보다 배열이나 hashmap으로 저장해놓는게 좋을텐데..
-	val player1 : PlayerTemp = PlayerTemp("1P", malNum)
-	val player2 : PlayerTemp = PlayerTemp("2P", malNum)
+	val player1 : PlayerTemp = PlayerTemp("1P", malNumLimit)
+	val player2 : PlayerTemp = PlayerTemp("2P", malNumLimit)
 
 
 	companion object {
-		fun of(roomId: UUID, sender: String?, turn: String?, profileURL: String?, malNum: Int): GameRoom {
+		fun of(roomId: UUID, sender: String?, turn: String?, profileURL: String?, malNumLimit: Int): GameRoom {
 			return GameRoom(
 				roomId = roomId,
 				sender = sender,
 				turn = turn,
 				profileURL = profileURL,
-				malNum = malNum
+				malNumLimit = malNumLimit
 			)
 		}
 	}
