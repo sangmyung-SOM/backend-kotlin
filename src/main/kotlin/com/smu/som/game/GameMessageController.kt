@@ -289,9 +289,9 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		request.player2Score = gameRoom.player2.getScore()
 
 		// 스코어가 4점이면 게임 종료
-		if (request.player1Score == 4) {
+		if (request.player1Score == gameRoom.malNumLimit) {
 			sendWinner("1P", "2P", request.gameId)
-		} else if (request.player2Score == 4) {
+		} else if (request.player2Score == gameRoom.malNumLimit) {
 			sendWinner("2P", "1P", request.gameId)
 		}
 
