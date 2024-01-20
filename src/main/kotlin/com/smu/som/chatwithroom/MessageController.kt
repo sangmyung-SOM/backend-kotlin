@@ -24,11 +24,9 @@ class MessageController(
 		else {
 			// 게임 방으로 메시지 전송
 			chatMessage.gameRoomMsg = chatMessage.sender + " : " + chatMessage.message
+			chatService.findById(chatMessage.roomId!!)!!.chatList.add(chatMessage)
 			sendingOperations.convertAndSend("/topic/game/chat/room/"+chatMessage.roomId,chatMessage)
 		}
-		chatService.findById(chatMessage.roomId!!)!!.chatList.add(chatMessage)
-        sendingOperations.convertAndSend("/topic/chat/room/"+chatMessage.roomId,chatMessage)
-
     }
 
 	// 기존 코드로 테스트 중이라서 잠시 복구 합니다.

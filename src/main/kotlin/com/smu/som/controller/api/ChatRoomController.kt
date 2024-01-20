@@ -51,7 +51,7 @@ class ChatRoomController(
 
 	@GetMapping("/room/{roomId}/chatLogs")
 	@ResponseBody
-	fun chatLogs(@PathVariable roomId: String): List<ChatMessage>{
-		return chatService.findById(roomId)?.chatList!!.toList()
+	fun chatLogs(@PathVariable roomId: String): ArrayList<ChatMessage>{
+		return ArrayList(chatService.findById(roomId)?.chatList!!)
 	}
 }
