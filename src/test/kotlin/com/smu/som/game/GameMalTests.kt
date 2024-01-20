@@ -178,8 +178,8 @@ class GameMalTests {
 	public fun 말움직이기_빽도_테스트7(){
 		// 도 -> 빽도로 움직인 말을 다른 플레이어가 못잡는 에러
 
-		val playerA = PlayerTemp("1P")
-		val playerB = PlayerTemp("2P")
+		val playerA = PlayerTemp("1P", 4)
+		val playerB = PlayerTemp("2P", 4)
 
 		val mal0A = playerA.findMal(0)
 		val mal0B = playerB.findMal(0)
@@ -206,8 +206,8 @@ class GameMalTests {
 	public fun 말움직이기_빽도_테스트8(){
 		// 도 -> 빽도로 움직인 말을 다른 플레이어가 못잡는 에러
 
-		val playerA = PlayerTemp("1P")
-		val playerB = PlayerTemp("2P")
+		val playerA = PlayerTemp("1P", 4)
+		val playerB = PlayerTemp("2P", 4)
 
 		val mal0A = playerA.findMal(0)
 		val mal0B = playerB.findMal(0)
@@ -232,8 +232,8 @@ class GameMalTests {
 
 	@Test
 	public fun 말잡기_테스트(){
-		val playerA = PlayerTemp("1P")
-		val playerB = PlayerTemp("2P")
+		val playerA = PlayerTemp("1P", 4)
+		val playerB = PlayerTemp("2P", 4)
 
 		val mal0A = playerA.findMal(0)
 		val mal0B = playerB.findMal(0)
@@ -256,7 +256,7 @@ class GameMalTests {
 
 	@Test
 	public fun 말업기_테스트(){
-		val playerA = PlayerTemp("1P")
+		val playerA = PlayerTemp("1P", 4)
 
 		val mal0A = playerA.findMal(0)
 		val mal1A = playerA.findMal(1)
@@ -281,8 +281,8 @@ class GameMalTests {
 
 	@Test
 	public fun 업은말_잡기_테스트(){
-		val playerA = PlayerTemp("1P")
-		val playerB = PlayerTemp("2P")
+		val playerA = PlayerTemp("1P", 4)
+		val playerB = PlayerTemp("2P", 4)
 
 		val mal0A = playerA.findMal(0)
 		val mal1A = playerA.findMal(1)
@@ -313,7 +313,7 @@ class GameMalTests {
 
 	@Test
 	public fun 업은말_또업기_테스트(){
-		val playerA = PlayerTemp("1P")
+		val playerA = PlayerTemp("1P", 4)
 
 		val mal0A = playerA.findMal(0)
 		val mal1A = playerA.findMal(1)
@@ -350,7 +350,7 @@ class GameMalTests {
 
 	@Test
 	public fun 유효하지_않은말_실행_테스트(){
-		val playerA = PlayerTemp("1P")
+		val playerA = PlayerTemp("1P", 4)
 
 		val mal0A = playerA.findMal(0)
 		val mal1A = playerA.findMal(1)
@@ -367,7 +367,7 @@ class GameMalTests {
 
 	@Test
 	public fun 유효하지_않은말_실행_테스트2(){
-		val playerA = PlayerTemp("1P")
+		val playerA = PlayerTemp("1P", 4)
 
 		val mal0A = playerA.findMal(0)
 
@@ -385,8 +385,13 @@ class GameMalTests {
 	}
 
 	@Test
+	public fun 말개수제한_테스트1(){
+
+	}
+
+	@Test
 	public fun 에러테스트(){
-		val playerA = PlayerTemp("1P")
+		val playerA = PlayerTemp("1P", 4)
 
 		val mal0A = playerA.findMal(0)
 

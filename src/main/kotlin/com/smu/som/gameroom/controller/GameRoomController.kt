@@ -5,7 +5,6 @@ import com.smu.som.gameroom.service.GameRoomService
 import com.smu.som.reportQnA.ReadReportDTO
 import com.smu.som.reportQnA.ReportService
 import lombok.RequiredArgsConstructor
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -54,10 +53,16 @@ class GameRoomController {
 	@ResponseBody
 	fun createRoom(@RequestParam name: String,
 				   @RequestParam category: String,
-				   @RequestParam adult: String ): GameRoomSetting
+				   @RequestParam adult: String,
+				   @RequestParam(name="mal") malNumLimit: Int): GameRoomSetting
 	{
 		println("게임방 생성 v2")
-		return gameRoomService.createGameRoom(name, category, adult)
+
+		if(malNumLimit < 1 || 4 < malNumLimit ){
+			throw RuntimeException("말의 개수는 1~4 사이어야합니다. 요청한 말 개수 제한=${malNumLimit}")
+		}
+
+		return gameRoomService.createGameRoom(name, category, adult, malNumLimit)
 	}
 
 	@GetMapping("/rooms")

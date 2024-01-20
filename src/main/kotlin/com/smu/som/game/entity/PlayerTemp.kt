@@ -1,6 +1,6 @@
 package com.smu.som.game.entity
 
-class PlayerTemp(id : String) {
+class PlayerTemp(id : String, malNumLimit: Int) {
 
 	private var id : String // 1P 또는 2P
 	private var malList : Array<Mal>
@@ -11,12 +11,11 @@ class PlayerTemp(id : String) {
 
 	init {
 		this.id = id
-		malList = Array<Mal>(4, {i -> Mal(i)})
+		malList = Array<Mal>(malNumLimit, { i -> Mal(i)})
 		this.score = IntArray(4){ 0 }
 		this.passCard = 0
 		this.penalty = false
 		this.yuts = IntArray(6){ 0 }
-
 	}
 
 	// 말 이동하기
@@ -58,13 +57,13 @@ class PlayerTemp(id : String) {
 	}
 
 	// 해당 윷을 사용자가 던졌었는지 확인
-	public fun checkYutValid(yutResult: YutResult) : Boolean{
-		// 해당 윷을 사용자가 던졌고, 윷판에 말이 없고 빽도 제외 다른 윷결과를 선택할 수 있을 때, 빽도 먼저 클릭할 수 없음.
-		return yuts[yutResult.id] > 0 && checkBackDoValid(yutResult)
+	public fun isYutValid(yutResult: YutResult) : Boolean{
+		return yuts[yutResult.id] > 0 && isCanUseBackDo(yutResult)
 	}
 
 	// 빽도를 사용할 수 있는지 확인
-	private fun checkBackDoValid(yutResult: YutResult): Boolean{
+	// 윷판에 말이 없고 빽도 제외 다른 윷결과를 선택할 수 있을 때, 빽도 먼저 클릭할 수 없음.
+	private fun isCanUseBackDo(yutResult: YutResult): Boolean{
 		if(yutResult != YutResult.BACK_DO){
 			return true
 		}

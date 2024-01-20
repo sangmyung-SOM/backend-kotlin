@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.web.bind.annotation.RestController
-import java.lang.RuntimeException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -53,11 +52,11 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 
 			if (gameMessage.playerId == "1P") {
 				gameMessage.sender?.let {
-					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_1P) , it)
+					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_1P, gameMessage.malNumLimit) , it)
 				}
 			} else if (gameMessage.playerId == "2P") {
 				gameMessage.sender?.let {
-					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_2P) , it)
+					roomList.put(GameRoom(UUID.fromString(gameMessage.roomId), gameMessage.sender, gameMessage.playerId, gameMessage.profileURL_2P, gameMessage.malNumLimit) , it)
 				}
 			}
 
@@ -223,6 +222,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val gameRoom: GameRoom = findGameRoom(request.gameId)
 		val player = gameRoom.findPlayer(request.playerId!!)
 
+		if(request.malId > gameRoom.malNumLimit-1){
+			throw RuntimeException("제한된 말 개수를 넘는 요청")
+		}
+
 		val response : GameMalResponse.MoveMalDTO = gameMalService.moveMal(gameRoom, request)
 
 		val num = request.yutResult.ordinal
@@ -286,9 +289,9 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		request.player2Score = gameRoom.player2.getScore()
 
 		// 스코어가 4점이면 게임 종료
-		if (request.player1Score == 4) {
+		if (request.player1Score == gameRoom.malNumLimit) {
 			sendWinner("1P", "2P", request.gameId)
-		} else if (request.player2Score == 4) {
+		} else if (request.player2Score == gameRoom.malNumLimit) {
 			sendWinner("2P", "1P", request.gameId)
 		}
 
