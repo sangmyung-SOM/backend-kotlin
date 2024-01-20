@@ -20,11 +20,15 @@ class MessageController(
     fun enter(chatMessage: ChatMessage){
         if (MessageType.ENTER.equals(chatMessage.type)){
             chatMessage.message = chatMessage.sender + " 님이 입장했습니다."
+			chatService.saveRoom(chatMessage.roomId!!) // 채팅방 저장
         }
 		else {
-			// 게임 방으로 메시지 전송
 			chatMessage.gameRoomMsg = chatMessage.sender + " : " + chatMessage.message
 			chatService.findById(chatMessage.roomId!!)!!.chatList.add(chatMessage)
+			// 채팅방에 메세지 발송 (GameChatActivity 에서 구독)
+			sendingOperations.convertAndSend("/topic/chat/room/"+chatMessage.roomId,chatMessage)
+
+			// 게임 방 최신 메세지 내역 표시 (GameTestActivity 에서 구독)
 			sendingOperations.convertAndSend("/topic/game/chat/room/"+chatMessage.roomId,chatMessage)
 		}
     }
