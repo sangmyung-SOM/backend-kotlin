@@ -5,6 +5,7 @@ import com.smu.som.game.GameStateType
 import lombok.Getter
 import lombok.NoArgsConstructor
 
+// GameMessageController에서 사용하는 DTO
 class GameMessage {
 
 	@Getter

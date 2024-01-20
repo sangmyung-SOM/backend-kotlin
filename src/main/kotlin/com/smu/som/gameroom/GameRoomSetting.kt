@@ -2,6 +2,7 @@ package com.smu.som.gameroom
 
 import java.util.*
 
+// 게임 방 설정 정보를 저장하는 DTO
 class GameRoomSetting(
 	var roomId:String?,
 	var roomName:String?,

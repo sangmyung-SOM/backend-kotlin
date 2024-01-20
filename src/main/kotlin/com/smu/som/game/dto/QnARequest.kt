@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import lombok.Getter
 import lombok.NoArgsConstructor
 
+// 게임 내에서 받는 질문과 답변에 대한 DTO
 class QnARequest {
 
 	@Getter

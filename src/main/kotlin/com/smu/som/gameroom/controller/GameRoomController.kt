@@ -13,42 +13,9 @@ import org.springframework.web.bind.annotation.*
 class GameRoomController {
 
 	private val gameRoomService: GameRoomService = GameRoomService()
-	private val reportService: ReportService = ReportService()
 
-	@GetMapping("/log")
-	fun logTest() : String{
-		println("This is a test log message from the server.")
-		return "테스트 로그. 서버 동작 확인용"
-	}
 
-	@GetMapping("/rooms/v2")
-	fun logTest2() : String{
-		println("This is a test log message from the server. v2")
-		return "테스트 로그 v2. 서버 동작 확인용"
-	}
-
-	@PostMapping("/room/reports/{roomId}/qna")
-	@ResponseBody
-	fun sendQnA(
-		@PathVariable roomId: String,
-		@RequestParam answer : String,
-		@RequestParam question : String,
-		@RequestParam playerId : String
-	) : Boolean {
-		println("sendQnA answer : ${answer}")
-//		return reportService.sendQnA(gameRoomId, qna)
-		return reportService.sendQnA(roomId, ReadReportDTO(answer, playerId, question))
-	}
-
-	@GetMapping("/room/reports/{roomId}/qna")
-	@ResponseBody
-	fun getQnA(
-		@PathVariable(name = "roomId") gameRoomId: String
-	) : List<ReadReportDTO> {
-		println("getQnA")
-		return reportService.getQnA(gameRoomId)
-	}
-
+	// 게임방 생성
 	@PostMapping("/room")
 	@ResponseBody
 	fun createRoom(@RequestParam name: String,
@@ -65,12 +32,14 @@ class GameRoomController {
 		return gameRoomService.createGameRoom(name, category, adult, malNumLimit)
 	}
 
+	// 게임방 목록 조회
 	@GetMapping("/rooms")
 	@ResponseBody
 	fun room(): List<GameRoomSetting> {
 		return gameRoomService.findAllRoom()
 	}
 
+	// 게임방 목록 페이징
 	@GetMapping("/room")
 	@ResponseBody
 	fun rooms(@RequestParam(defaultValue = "1") pageNumber: Int,
@@ -79,6 +48,7 @@ class GameRoomController {
 		return gameRoomService.findRoom(pageNumber, pageSize)
 	}
 
+	// 게임방 삭제
 	@DeleteMapping("/room/{roomId}")
 	@ResponseBody
 	fun deleteRoom(@PathVariable roomId: String) {
@@ -86,6 +56,7 @@ class GameRoomController {
 		gameRoomService.deleteById(roomId)
 	}
 
+	// 게임방 게임 시작으로 상태 변경
 	@PatchMapping("/room/{roomId}/update")
 	@ResponseBody
 	fun updateRoomState(@PathVariable roomId: String, @RequestParam state : Boolean) : Boolean {

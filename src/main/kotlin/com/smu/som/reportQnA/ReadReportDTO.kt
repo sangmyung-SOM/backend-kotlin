@@ -1,8 +1,7 @@
 package com.smu.som.reportQnA
 
-import com.fasterxml.jackson.annotation.JsonProperty
 
-
+// 게임에서 사용하는 질문기록 DTO
 class ReadReportDTO (
 	var answer: String?,
 	var question: String?,

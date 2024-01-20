@@ -1,13 +1,8 @@
 package com.smu.som.game
 
-import java.util.*
-import kotlin.collections.HashSet
 
+// 게임에서 사용하는 윷 확률을 계산하는 클래스
 class GameService {
-
-	private var gameRoomList: HashSet<GameRoom> = HashSet()
-
-	private var btnState: Boolean = false
 
 	fun playGame(sum: Int): Int {
 		return percentage(sum)

@@ -1,6 +1,7 @@
 package com.smu.som.game
 
 import com.smu.som.game.dto.*
+import com.smu.som.game.entity.GameRoom
 import com.smu.som.game.entity.PlayerTemp
 import lombok.NoArgsConstructor
 import lombok.RequiredArgsConstructor
@@ -10,14 +11,15 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+// 게임 소켓 컨트롤러
 @RestController
 @RequiredArgsConstructor
 @NoArgsConstructor
 class GameMessageController(val sendingOperations: SimpMessageSendingOperations, val gameMalService: GameMalService)
 {
 
+	// 게임방 리스트
 	var roomList = ConcurrentHashMap<GameRoom, String>() // 게임방, 유저아이디
-
 
 	// 게임 연결 끊김
 	@MessageMapping("/game/disconnect")
@@ -39,11 +41,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 					roomList.remove(it.key)
 				}
 			}
-
 		}
-
 	}
 
+	// 게임 처응 입장 및 게임 시작 메시지
 	@MessageMapping("/game/message")
 	fun gameWait(gameMessage: GameMessage.GetGameInfo){
 
@@ -112,6 +113,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 	}
 
+	// 게잉 윷 던진 결과
 	@MessageMapping("/game/throw")
 	fun yutThrow(gameMessage : GameMessage.GetThrowResult){
 		val gameService = GameService()
@@ -142,6 +144,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 	}
 
+	// 질문 결과 전송 (질문을 요청하는 api가 따로 있고, 실시간 질문 공유를 위해 만듬)
 	@MessageMapping("/game/question")
 	fun question(request: QnARequest.GetQuestionDTO){
 
@@ -152,6 +155,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		sendingOperations.convertAndSend("/topic/game/question/"+request.roomId, request)
 	}
 
+	// 질문 변경 1회를 클릭한 경우
 	@MessageMapping("/game/question/pass")
 	fun questionPass(request: QnARequest.GetQuestionDTO){
 		val gameRoom : GameRoom = findGameRoom(request.roomId)
@@ -168,6 +172,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		player.yuts = IntArray(6) {0}
 	}
 
+	// 추가 질문권 사용
 	@MessageMapping("/game/question/wish")
 	fun questionWish(request: QnARequest.GetAnswerDTO){
 
@@ -183,6 +188,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		sendingOperations.convertAndSend("/topic/game/question/wish"+request.roomId, response)
 	}
 
+	// 질문에 대한 답변
 	@MessageMapping("/game/answer")
 	fun answer(request: QnARequest.GetAnswerDTO){
 		val playerTemp = findGameRoom(request.roomId).findPlayer(request.playerId!!)
@@ -268,6 +274,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		sendingOperations.convertAndSend(url, response)
 	}
 
+	// 게잉 점수 조회
 	@MessageMapping("/game/score")
 	fun getPlayerScore(request: GameScoreRequest.getGameScoreDTO) {
 
@@ -298,6 +305,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		sendingOperations.convertAndSend("/topic/game/score/" + request.gameId, request)
 	}
 
+	// 질문 패스권 조회 및 사용
 	@MessageMapping("/game/room/wish/pass")
 	fun passWish(request: GameMessage.GetPassWish) {
 
@@ -344,7 +352,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 	}
 
 	// 게임 찾기 <- 이것도 원래는 service 클래스에서 해야함
-	private fun findGameRoom(gameId:String):GameRoom{
+	private fun findGameRoom(gameId:String): GameRoom {
 		for(item in roomList.keys){
 			if(item.roomId == UUID.fromString(gameId)){
 				return item
@@ -354,12 +362,14 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		throw RuntimeException("게임을 찾을 수 없음.")
 	}
 
+	// 턴 변경
 	private fun turnChange(gameId: String, playerId: String, type: GameStateType) {
 		val turnChange = GameMessage.GetTurnChange(
 			roomId = gameId,
 			playerId = playerId,
 			type = type
 		)
+		// Log 출력
 		if (type == GameStateType.TURN_CHANGE) {
 			println("턴 변경")
 		}

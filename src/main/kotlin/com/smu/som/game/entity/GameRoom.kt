@@ -1,11 +1,11 @@
-package com.smu.som.game
+package com.smu.som.game.entity
 
-import com.smu.som.game.entity.PlayerTemp
 import lombok.Getter
 import lombok.NoArgsConstructor
 import lombok.Setter
 import java.util.UUID
 
+// 게임 방 정보를 저장하는 entity
 @NoArgsConstructor
 @Getter
 @Setter

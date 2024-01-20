@@ -3,7 +3,7 @@ package com.smu.som.game.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import lombok.Getter
 import lombok.NoArgsConstructor
-
+// 게임 점수 정보 DTO
 class GameScoreRequest {
 
 	@Getter

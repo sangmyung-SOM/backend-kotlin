@@ -2,6 +2,7 @@ package com.smu.som.game
 
 import com.smu.som.game.dto.GameMalRequest
 import com.smu.som.game.dto.GameMalResponse
+import com.smu.som.game.entity.GameRoom
 import com.smu.som.game.entity.Mal
 import com.smu.som.game.entity.PlayerTemp
 import com.smu.som.game.entity.YutResult
