@@ -74,6 +74,7 @@ dependencies {
 	implementation ("org.webjars.bower:vue:2.5.16")
 	implementation ("org.webjars.bower:axios:0.17.1")
 	implementation ("com.google.code.gson:gson:2.8.0")
+    implementation ("com.google.guava:guava:31.0.1-jre")
 }
 
 tasks.withType<KotlinCompile> {
