@@ -292,7 +292,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 
 		request.player1Score = gameRoom.player1.getScore()
-//		request.player2Score = gameRoom.player2.getScore()
+		request.player2Score = gameRoom.player2.getScore()
 
 		// 테스트를 위한 임시 코드
 //		request.player2Score = gameRoom.malNumLimit
