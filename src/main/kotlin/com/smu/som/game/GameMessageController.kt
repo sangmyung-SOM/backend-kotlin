@@ -295,7 +295,7 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 //		request.player2Score = gameRoom.player2.getScore()
 
 		// 테스트를 위한 임시 코드
-		request.player2Score = gameRoom.malNumLimit
+//		request.player2Score = gameRoom.malNumLimit
 
 		// 스코어가 4점이면 게임 종료
 		if (request.player1Score == gameRoom.malNumLimit) {
