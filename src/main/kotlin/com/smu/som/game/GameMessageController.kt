@@ -121,7 +121,6 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		val player = gameRoom.findPlayer(gameMessage.playerId!!)
 		val num = gameService.playGame(player.yuts.sum())
 
-		println("윷 던지기")
 		// 처음 던진 윷이 빽도인 경우 한번 더 던짐
 		if (GameStateType.FIRST_THROW == gameMessage.type && num == 0) {
 
@@ -293,7 +292,10 @@ class GameMessageController(val sendingOperations: SimpMessageSendingOperations,
 		}
 
 		request.player1Score = gameRoom.player1.getScore()
-		request.player2Score = gameRoom.player2.getScore()
+//		request.player2Score = gameRoom.player2.getScore()
+
+		// 테스트를 위한 임시 코드
+		request.player2Score = gameRoom.malNumLimit
 
 		// 스코어가 4점이면 게임 종료
 		if (request.player1Score == gameRoom.malNumLimit) {

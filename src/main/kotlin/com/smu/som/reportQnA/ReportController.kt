@@ -19,7 +19,6 @@ class ReportController(
 		@PathVariable(name = "roomId") roomId: String,
 		@RequestBody qna: ReadReportDTO
 	) : ResponseEntity<Any> {
-		println("sendQnA answer : ${qna.answer}")
 		return ResponseEntity.ok().body(reportService.sendQnA(roomId, qna))
 	}
 
@@ -29,7 +28,6 @@ class ReportController(
 	fun getQnA(
 		@PathVariable(name = "roomId") roomId: String
 	) : List<ReadReportDTO> {
-		println("getQnA")
 		return reportService.getQnA(roomId)
 	}
 
